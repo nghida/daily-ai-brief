@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily AI Brief</title>
+  <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
+  <style>/* ═══════════════════════════════════════════════
+   Daily AI Brief — Refined Minimalist Theme
+   Inspired by Stratechery, Paco, Linear
+   ═══════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  /* Light palette — warm paper tones */
+  --bg: #f8f7f4;
+  --bg-elevated: #ffffff;
+  --text: #1c1917;
+  --text-secondary: #57534e;
+  --muted: #a8a29e;
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --accent-subtle: #fef3c7;
+  --border: #e7e5e4;
+  --border-hover: #d6d3d1;
+  --shadow: 0 1px 3px rgba(28, 25, 23, 0.04), 0 1px 2px rgba(28, 25, 23, 0.02);
+  --shadow-hover: 0 4px 12px rgba(28, 25, 23, 0.08), 0 2px 4px rgba(28, 25, 23, 0.04);
+  --tag-bg: #fef3c7;
+  --tag-text: #92400e;
+  --tag-border: #fde68a;
+  --gradient-start: #f8f7f4;
+  --gradient-end: #fefdfb;
+  --code-bg: #f5f5f4;
+  --blockquote-bg: #fafaf9;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0a09;
+    --bg-elevated: #1c1917;
+    --text: #fafaf9;
+    --text-secondary: #a8a29e;
+    --muted: #78716c;
+    --accent: #f59e0b;
+    --accent-hover: #fbbf24;
+    --accent-subtle: #451a03;
+    --border: #292524;
+    --border-hover: #44403c;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --tag-bg: #451a03;
+    --tag-text: #fcd34d;
+    --tag-border: #78350f;
+    --gradient-start: #0c0a09;
+    --gradient-end: #1c1917;
+    --code-bg: #1c1917;
+    --blockquote-bg: #1c1917;
+  }
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── Base ── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-subtle);
+  color: var(--accent-hover);
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ── Header ── */
+header {
+  padding: 4rem 0 0;
+  margin-bottom: 1rem;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+  color: white;
+  font-size: 0.85rem;
+  letter-spacing: -0.03em;
+}
+
+header h1 {
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+header .subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.header-meta .stat {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.header-meta .stat strong {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.rss-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.rss-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.rss-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Brief List (Index) ── */
+.brief-list {
+  list-style: none;
+  padding: 0;
+}
+
+.brief-item {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.brief-item + .brief-item {
+  border-top: 1px solid var(--border);
+}
+
+.brief-item-inner {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: -1.5rem;
+  transition: all 0.2s ease;
+}
+
+.brief-item-inner:hover {
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-hover);
+}
+
+.brief-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.brief-date {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.brief-issue {
+  font-size: 0.72rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.brief-title {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+
+.brief-title a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.brief-title a:hover {
+  color: var(--accent);
+}
+
+.brief-excerpt {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.brief-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+/* ── Tags ── */
+.tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border: 1px solid var(--tag-border);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2em 0.55em;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.read-more {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: all 0.2s ease;
+}
+
+.brief-item-inner:hover .read-more {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.read-more svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Brief Detail Page ── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 2.5rem;
+  padding: 0.4rem 0;
+  transition: color 0.15s ease;
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+.back-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.brief-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.brief-header .date {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.brief-header h1 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.brief-header .tags {
+  margin-top: 1rem;
+}
+
+/* ── Brief Content (Article) ── */
+.brief-content {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.brief-content h2 {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 2.5rem 0 1rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.brief-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 2rem 0 0.6rem;
+  color: var(--text);
+}
+
+.brief-content p {
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+
+.brief-content ul, .brief-content ol {
+  margin: 0.75rem 0 1.25rem 1.25rem;
+  color: var(--text);
+}
+
+.brief-content li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.brief-content li::marker {
+  color: var(--accent);
+}
+
+.brief-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--tag-border);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.brief-content a:hover {
+  text-decoration-color: var(--accent);
+}
+
+.brief-content strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.brief-content em {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.05em;
+  color: var(--text-secondary);
+}
+
+.brief-content blockquote {
+  border-left: 3px solid var(--accent);
+  background: var(--blockquote-bg);
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.brief-content blockquote p {
+  margin-bottom: 0;
+}
+
+.brief-content code {
+  background: var(--code-bg);
+  color: var(--accent-hover);
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  font-size: 0.87em;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.brief-content pre {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.brief-content pre code {
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.brief-content hr {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ── Footer ── */
+footer {
+  margin-top: 4rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer p {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+footer .footer-brand {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ── Empty State ── */
+.empty-state {
+  text-align: center;
+  padding: 6rem 0;
+  color: var(--muted);
+}
+
+.empty-state .empty-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* ── Divider ── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  header {
+    padding: 2.5rem 0 0;
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+  }
+
+  .brief-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .brief-title {
+    font-size: 1.15rem;
+  }
+
+  .brief-item-inner {
+    padding: 1rem;
+    margin: -1rem;
+  }
+
+  .read-more {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ── Fade-in Animation ── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brief-item {
+  animation: fadeUp 0.4s ease forwards;
+  opacity: 0;
+}
+
+.brief-item:nth-child(1) { animation-delay: 0.05s; }
+.brief-item:nth-child(2) { animation-delay: 0.1s; }
+.brief-item:nth-child(3) { animation-delay: 0.15s; }
+.brief-item:nth-child(4) { animation-delay: 0.2s; }
+.brief-item:nth-child(5) { animation-delay: 0.25s; }
+.brief-item:nth-child(6) { animation-delay: 0.3s; }
+.brief-item:nth-child(7) { animation-delay: 0.35s; }
+
+article {
+  animation: fadeUp 0.3s ease forwards;
+}
+</style>
+  <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
+</head>
+<body>
+  <div class="container">
+    
+    <header>
+      <div class="header-row">
+        <div>
+          <div class="logo-mark">AI</div>
+          <h1>Daily AI Brief</h1>
+          <p class="subtitle">Enterprise AI insights, curated daily by Cowork</p>
+        </div>
+        <div class="header-actions">
+          <a href="feed.xml" class="rss-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+            <span>RSS</span>
+          </a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="section-divider"><span>4 briefs</span></div><ul class="brief-list">
+            <li class="brief-item">
+              <a href="2026-03-10.html" class="brief-item-inner">
+                <div class="brief-meta">
+                  <span class="brief-date">Tue, Mar 10</span>
+                  <span class="brief-date">&middot;</span>
+                  <span class="brief-date">1 min read</span>
+                </div>
+                <h2 class="brief-title">AI Brief — March 10, 2026</h2>
+                <p class="brief-excerpt">Claude Opus 4.6 benchmarks, Google DeepMind's new reasoning model, and the rise of AI agents in enterprise workflows.</p>
+                <div class="brief-footer">
+                  <div class="tags"><span class="tag">LLM</span><span class="tag">Enterprise AI</span><span class="tag">Agents</span></div>
+                  <span class="read-more">
+                    Read brief <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+            <li class="brief-item">
+              <a href="2026-03-09.html" class="brief-item-inner">
+                <div class="brief-meta">
+                  <span class="brief-date">Mon, Mar 09</span>
+                  <span class="brief-date">&middot;</span>
+                  <span class="brief-date">1 min read</span>
+                </div>
+                <h2 class="brief-title">AI Brief — March 9, 2026</h2>
+                <p class="brief-excerpt">OpenAI ships GPT-5 Turbo API, enterprise adoption of AI coding assistants hits 60%, and the EU AI Act enforcement begins.</p>
+                <div class="brief-footer">
+                  <div class="tags"><span class="tag">GPT-5</span><span class="tag">Regulation</span><span class="tag">Dev Tools</span></div>
+                  <span class="read-more">
+                    Read brief <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+            <li class="brief-item">
+              <a href="2026-03-08.html" class="brief-item-inner">
+                <div class="brief-meta">
+                  <span class="brief-date">Sun, Mar 08</span>
+                  <span class="brief-date">&middot;</span>
+                  <span class="brief-date">1 min read</span>
+                </div>
+                <h2 class="brief-title">AI Brief — March 8, 2026</h2>
+                <p class="brief-excerpt">Google launches Gemini 2.5 Flash, MCP protocol gains universal adoption, and the first AI agent marketplace goes live.</p>
+                <div class="brief-footer">
+                  <div class="tags"><span class="tag">Gemini</span><span class="tag">MCP</span><span class="tag">Marketplace</span></div>
+                  <span class="read-more">
+                    Read brief <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </span>
+                </div>
+              </a>
+            </li>
+            <li class="brief-item">
+              <a href="2026-03-07.html" class="brief-item-inner">
+                <div class="brief-meta">
+                  <span class="brief-date">Sat, Mar 07</span>
+                  <span class="brief-date">&middot;</span>
+                  <span class="brief-date">1 min read</span>
+                </div>
+                <h2 class="brief-title">AI Brief — March 7, 2026</h2>
+                <p class="brief-excerpt">Anthropic raises $5B Series E, the rise of 'AI-native' companies, and why prompt engineering is evolving into agent design.</p>
+                <div class="brief-footer">
+                  <div class="tags"><span class="tag">Fundraising</span><span class="tag">Strategy</span><span class="tag">Agents</span></div>
+                  <span class="read-more">
+                    Read brief <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                  </span>
+                </div>
+              </a>
+            </li></ul>
+    </main>
+    <footer>
+      <p>Auto-published by <span class="footer-brand">Cowork</span> &middot; Nghi Duong</p>
+    </footer>
+  </div>
+</body>
+</html>
