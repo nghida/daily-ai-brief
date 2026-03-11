@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Brief — March 9, 2026</title>
+  <title>AI Brief — March 4, 2026</title>
   <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
   <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="./feed.xml">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
@@ -249,41 +249,107 @@ article { animation: fadeUp 0.3s ease both; }
     <a href="./" class="back"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> All briefs</a>
     <article>
       <div class="article-header">
-        <div class="meta">Mar 09, 2026 &middot; 1 min read</div>
-        <h1>AI Brief — March 9, 2026</h1>
-        <div class="tags"><span class="tag">GPT-5</span><span class="tag">Regulation</span><span class="tag">Dev Tools</span></div>
+        <div class="meta">Mar 04, 2026 &middot; 5 min read</div>
+        <h1>AI Brief — March 4, 2026</h1>
+        <div class="tags"><span class="tag">LLM</span><span class="tag">Enterprise AI</span><span class="tag">Agents</span><span class="tag">Funding</span></div>
       </div>
-      <div class="article-body"><h2>Top Stories</h2>
-
-<h3>OpenAI Launches GPT-5 Turbo API</h3>
-<p>The new GPT-5 Turbo model brings 3x faster inference and native tool-use capabilities. Pricing starts at $5/M input tokens — a 40% reduction from GPT-5 base.</p>
-
-<h3>Enterprise AI Coding Adoption Hits 60%</h3>
-<p>A new survey from GitHub reveals that 60% of Fortune 500 companies now use AI coding assistants in production workflows. The most popular use cases: code review, test generation, and documentation.</p>
-
-<h3>EU AI Act Enforcement Kicks Off</h3>
-<p>March 2026 marks the beginning of enforcement for the EU AI Act's high-risk system requirements. Companies face fines up to 7% of global revenue for non-compliance.</p>
+      <div class="article-body"><blockquote>
+<p>Items from the past 7 days only. Sources linked inline.</p>
+</blockquote>
 
 <hr>
 
-<h2>Enterprise AI Updates</h2>
+<h2>Model Releases & Updates</h2>
 
-<ul>
-<li><strong>ServiceNow</strong> released AI Agents for IT operations, automating incident resolution</li>
-<li><strong>Palantir</strong> launched AIP Agent Studio for custom enterprise AI agent development</li>
-<li><strong>Stripe</strong> integrated AI-powered fraud detection across all payment processing</li>
-</ul>
+<p><strong>Anthropic — Claude Sonnet 4.6 leads real-world benchmarks</strong></p>
+<p>Released Feb 17, Claude Sonnet 4.6 now tops the GDPval-AA Elo leaderboard (1,633 points) — a benchmark measuring expert-level office work — beating even Claude Opus 4.6 and Gemini 3.1 Pro. It ships with a 1M token context window in beta at unchanged pricing. Opus 4.6 leads SWE-Bench Verified at 80.8% for agentic coding. (<a href="https://llm-stats.com/llm-updates">LLM Stats</a>)</p>
+
+<p><strong>Google — Gemini 3.1 Pro in preview</strong></p>
+<p>Released Feb 19, Gemini 3.1 Pro dominates 13 of 16 major benchmarks and more than doubled reasoning performance vs Gemini 3 Pro on ARC-AGI-2 (77.1% verified score). Pricing is unchanged from Gemini 3 Pro. (<a href="https://www.datacamp.com/blog/gemini-3-1">DataCamp</a>)</p>
+
+<p><strong>OpenAI — GPT-5.2, Realtime API, and o3-pro</strong></p>
+<p>GPT-5.2 is live at $1.75/1M input tokens and $14/1M output tokens (90% cached discount). OpenAI also reduced o3 pricing across batch and flex processing, and cut <code>gpt-realtime</code> audio input prices by 20% ($32/1M audio input tokens). A new <code>gpt-realtime</code> model optimized for production voice agents was announced. (<a href="https://platform.openai.com/docs/changelog">OpenAI Changelog</a> · <a href="https://www.tldl.io/resources/openai-api-pricing">TLDL</a>)</p>
+
+<p><strong>OpenAI — Billing change (action required)</strong></p>
+<p>Starting <strong>March 31, 2026</strong>, container usage will be billed per 20-minute session. Review your container usage if applicable. (<a href="https://openai.com/api/pricing/">OpenAI Pricing</a>)</p>
 
 <hr>
 
-<h2>What to Watch</h2>
+<h2>Chinese AI Labs (Qwen / Kimi / DeepSeek)</h2>
 
-<p>The race between open-source and proprietary models intensifies as Meta's Llama 4 approaches GPT-5 benchmarks. Key question: will enterprise customers prioritize cost savings from open-source or reliability from closed models?</p>
+<p><strong>Alibaba Qwen — Qwen3-Max-Thinking + Qwen-Image 2.0</strong></p>
+<p>Alibaba unveiled Qwen3-Max-Thinking (Feb 16), its largest model yet, with "comparable" performance to Claude Opus 4.5 and Gemini 3 Pro across 19 benchmarks, emphasizing stronger agentic and tool-use capabilities. Simultaneously, Qwen-Image 2.0 launched as a next-generation image generation foundation model. Alibaba also updated the Qwen app to integrate e-commerce actions (Taobao shopping, food ordering, payments) directly in-chat. (<a href="https://www.bloomberg.com/news/articles/2026-02-16/alibaba-unveils-major-ai-model-upgrade-ahead-of-deepseek-release">Bloomberg</a> · <a href="https://www.trendforce.com/news/2026/02/02/news-china-steps-up-ai-push-alibaba-latest-qwen-model-nears-u-s-rivals-moonshot-advances/">TrendForce</a>)</p>
+
+<p><strong>Moonshot AI / Kimi — K2.5 goes multimodal + coding agent</strong></p>
+<p>Kimi K2.5 (1T parameter MoE, 32B active) claims to outperform leading US models on video-generation and agentic tasks. It now processes text, images, and video from a single prompt. Moonshot also launched an automated coding agent to compete directly with Claude Code. Revenue in the first 20 days post-K2.5 launch already exceeded all of 2025 total revenue. (<a href="https://www.cnbc.com/2026/01/28/chinese-tech-companies-accelerate-ai-model-rollouts-us-rivals-deepseek-moonshot-kimi.html">CNBC</a> · <a href="https://thechinaacademy.org/kimi-moonshot-ai-becomes-chinas-fastest-decacorn-as-20-day-revenue-surpasses-entire-2025-total-china-ai-daily-february-24-2026/">The China Academy</a>)</p>
+
+<p><strong>DeepSeek — V4 imminent</strong></p>
+<p>A new architecture identifier "MODEL1" was spotted in DeepSeek's GitHub, widely interpreted as the foundation for DeepSeek V4 (est. 1T parameters, native multimodal). Release expected around early-to-mid March 2026. (<a href="https://www.technologyreview.com/2026/02/12/1132811/whats-next-for-chinese-open-source-ai">MIT Technology Review</a>)</p>
+
+<hr>
+
+<h2>Agentic Systems & Frameworks</h2>
+
+<p><strong>LangGraph — v1.0 now the default for all LangChain agents</strong></p>
+<p>LangGraph reached v1.0 in late 2025 and is now the default runtime for all LangChain agents, delivering 40%+ performance improvements through parallel execution. LangGraph vs CrewAI vs AutoGen comparisons now consistently rank LangGraph first for production-grade complex orchestration. (<a href="https://blog.softmaxdata.com/definitive-guide-to-agentic-frameworks-in-2026-langgraph-crewai-ag2-openai-and-more/">SoftmaxData</a>)</p>
+
+<p><strong>OpenAI — OpenAI Frontier (enterprise agent platform)</strong></p>
+<p>OpenAI launched Frontier (Feb 5), an end-to-end platform for enterprises to build and manage AI agents. It lets teams program agents to connect to external data/apps, manage access controls similarly to employee permissions, and integrates with OpenAI's full model suite. (<a href="https://techcrunch.com/2026/02/05/openai-launches-a-way-for-enterprises-to-build-and-manage-ai-agents/">TechCrunch</a> · <a href="https://openai.com/index/introducing-openai-frontier/">OpenAI</a>)</p>
+
+<p><strong>Framework landscape in 2026</strong></p>
+<p>The dominant picks by use case: LangGraph (complex production orchestration), AutoGen/AG2 (rapid prototyping, Microsoft stack), CrewAI (role-based multi-agent collaboration), Pydantic AI (type-safe pipelines), Google ADK and Amazon Bedrock Agents (cloud-native). A new entrant <strong>OpenAgents</strong> is gaining attention for its open-source multi-agent benchmarks. (<a href="https://medium.com/@openagents/open-source-ai-agent-frameworks-compared-crewai-vs-langgraph-vs-autogen-vs-openagents-2026-36a036b4801d">Medium</a>)</p>
+
+<hr>
+
+<h2>Workflow Automation</h2>
+
+<p><strong>n8n — Now AI-native with 70+ AI-specific nodes</strong></p>
+<p>n8n has fully repositioned as an AI-native automation platform, shipping 70+ AI-specific nodes covering LLMs, embeddings, vector databases, speech recognition, OCR, and image generation, plus ~70 dedicated LangChain integration nodes for building agent workflows. Self-hosting model continues to attract enterprise teams wanting control. (<a href="https://www.shakudo.io/blog/top-9-workflow-automation-tools">Shakudo</a> · <a href="https://hatchworks.com/blog/ai-agents/n8n-vs-zapier/">HatchWorks</a>)</p>
+
+<p><strong>Zapier — 8,000+ integrations, 450+ AI-focused</strong></p>
+<p>Zapier now advertises 8,000+ app integrations (up from 5,000 in 2022) and 450+ AI-focused integrations including multi-step Zaps and built-in AI utilities. Still the easiest entry point for non-technical teams. (<a href="https://zapier.com/blog/n8n-vs-make/">Zapier</a>)</p>
+
+<p><strong>Make, Workato, Activepieces — Enterprise & open-source</strong></p>
+<p>Make continues to lead on advanced branching in fully-hosted environments; Workato targets compliance-heavy enterprise governance; Activepieces is emerging as the leading open-source alternative to n8n, offering similar workflow-level customization. A new entrant <strong>Lindy AI</strong> is being compared directly against all three for pure AI agent automation. (<a href="https://www.shakudo.io/blog/top-9-workflow-automation-tools">Shakudo</a>)</p>
+
+<hr>
+
+<h2>Pricing & API Changes</h2>
+
+<p>| Model / Service | Change | Effective |</p>
+<p>|---|---|---|</p>
+<p>| OpenAI GPT-5.2 | $1.75 / $14 per 1M tokens (in/out), 90% cached discount | Now |</p>
+<p>| OpenAI o3 | Price reduced across batch + flex | Now |</p>
+<p>| OpenAI gpt-realtime | Audio input cut 20% → $32/1M tokens | Now |</p>
+<p>| OpenAI containers | Billed per 20-min session | <strong>March 31, 2026</strong> |</p>
+<p>| Google Gemini 3.1 Pro | Unchanged from Gemini 3 Pro (price hold despite upgrade) | Now |</p>
+
+<hr>
+
+<h2>Enterprise AI News</h2>
+
+<p><strong>OpenAI raises $110B at $730B valuation</strong> — The largest private fundraise ever, led by Amazon ($50B), Nvidia ($30B), and SoftBank ($30B). Announced Feb 27. (<a href="https://techfundingnews.com/openai-anthropic-xai-ai-funding-trends-2025/">TechFundingNews</a>)</p>
+
+<p><strong>Anthropic closes $30B Series G</strong> — Second-largest venture round in history, reinforcing Anthropic's position as the primary safety-focused enterprise AI provider. (<a href="https://techfundingnews.com/openai-anthropic-xai-ai-funding-trends-2025/">TechFundingNews</a>)</p>
+
+<p><strong>AI chip alternatives heating up</strong> — Over $1.2B flowed into Nvidia alternatives in a single week: MatX ($500M, Feb 25), SambaNova ($350M Series E), Axelera AI ($250M — largest European AI chip raise ever), and Taalas ($169M). (<a href="https://aifundingtracker.com/ai-startup-funding-news-today/">AI Funding Tracker</a>)</p>
+
+<p><strong>ChatGPT Enterprise launches at UCSF</strong> — OpenAI's ChatGPT Enterprise rolled out in a Feb 2026 institutional launch, signaling broader healthcare/academic sector adoption. (<a href="https://chancellor.ucsf.edu/news/open-ais-chatgpt-enterprise-february-2026-launch">UCSF</a>)</p>
+
+<hr>
+
+<h2>Research Highlights</h2>
+
+<p><strong>ARC-AGI-2 emerges as the new frontier benchmark</strong> — Gemini 3.1 Pro (77.1%) and Claude Opus 4.6 (68.8%) are now the top performers. The benchmark is replacing SWE-Bench as the standard for measuring general reasoning capability across labs.</p>
+
+<p><strong>Single-agent compression of multi-agent systems</strong> — New research (cited by Cobus Greyling) shows compiling multi-agent pipelines into a single agent with skills reduces token usage by <strong>54%</strong> and latency by <strong>50%</strong> while matching accuracy on popular benchmarks. High relevance for enterprise cost optimization.</p>
+
+<hr>
 
 <hr>
 
 <p><em>Generated by Cowork — Nghi's Daily AI Brief</em></p></div>
-      <div class="article-nav"><a href="./2026-03-08.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Sun, Mar 08</a><a href="./2026-03-10.html">Tue, Mar 10 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
+      <div class="article-nav"><span></span><a href="./2026-03-05.html">Thu, Mar 05 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
     </article></main>
     <footer class="site-footer">
       <p>Auto-published by <span class="cowork">Cowork</span> &middot; Nghi Duong</p>
