@@ -1,13 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily AI Brief</title>
-  <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
-  <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="./feed.xml">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
-  <style>
+#!/usr/bin/env python3
+"""Build static site from markdown briefs — v2 redesign."""
+
+import os, re, shutil, sys
+from datetime import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+BRIEFS_DIR = ROOT / "briefs"
+DIST_DIR = ROOT / "dist"
+PUBLIC_DIR = ROOT / "public"
+
+SITE_TITLE = "Daily AI Brief"
+SITE_SUBTITLE = "Enterprise AI insights, curated daily by Cowork"
+SITE_URL = "https://nghida.github.io/daily-ai-brief"
+
+# ── Inline CSS ── (no external file dependency)
+
+CSS = '''
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
 
 :root {
@@ -240,165 +249,247 @@ article { animation: fadeUp 0.3s ease both; }
   .brief-card:hover .card-title { color: var(--accent); }
   .card-arrow { opacity: 1; transform: translateX(0); }
 }
-</style>
-</head>
-<body>
-  <div class="site">
-    
+'''
+
+# ── SVG Icons ──
+
+ICON_RSS = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'
+ICON_LEFT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>'
+ICON_RIGHT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
+
+
+# ── Markdown to HTML ──
+
+def md_to_html(md):
+    lines = md.split('\n')
+    out = []
+    in_ul = in_ol = in_code = in_bq = False
+
+    for line in lines:
+        s = line.strip()
+
+        if s.startswith('```'):
+            if in_code: out.append('</code></pre>'); in_code = False
+            else: out.append('<pre><code>'); in_code = True
+            continue
+        if in_code: out.append(esc(line)); continue
+
+        if in_ul and not s.startswith('- ') and not s.startswith('* '): out.append('</ul>'); in_ul = False
+        if in_ol and not re.match(r'^\d+\.\s', s): out.append('</ol>'); in_ol = False
+
+        if s.startswith('> '):
+            if not in_bq: out.append('<blockquote>'); in_bq = True
+            out.append(f'<p>{inl(s[2:])}</p>'); continue
+        elif in_bq: out.append('</blockquote>'); in_bq = False
+
+        if s in ('---','***','___'): out.append('<hr>'); continue
+
+        m = re.match(r'^(#{1,6})\s+(.*)', line)
+        if m: out.append(f'<h{len(m[1])}>{inl(m[2])}</h{len(m[1])}>'); continue
+
+        if s.startswith('- ') or s.startswith('* '):
+            if not in_ul: out.append('<ul>'); in_ul = True
+            out.append(f'<li>{inl(s[2:])}</li>'); continue
+
+        m = re.match(r'^(\d+)\.\s+(.*)', s)
+        if m:
+            if not in_ol: out.append('<ol>'); in_ol = True
+            out.append(f'<li>{inl(m[2])}</li>'); continue
+
+        if s: out.append(f'<p>{inl(s)}</p>')
+        else: out.append('')
+
+    if in_ul: out.append('</ul>')
+    if in_ol: out.append('</ol>')
+    if in_bq: out.append('</blockquote>')
+    if in_code: out.append('</code></pre>')
+    return '\n'.join(out)
+
+def inl(t):
+    t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
+    t = re.sub(r'\*(.+?)\*', r'<em>\1</em>', t)
+    t = re.sub(r'`(.+?)`', r'<code>\1</code>', t)
+    t = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', t)
+    return t
+
+def esc(t): return t.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+
+
+# ── Front matter ──
+
+def parse_brief(fp):
+    raw = fp.read_text('utf-8')
+    attrs, body = {}, raw
+    if raw.startswith('---'):
+        parts = raw.split('---', 2)
+        if len(parts) >= 3:
+            body = parts[2].strip()
+            for ln in parts[1].strip().split('\n'):
+                ln = ln.strip()
+                if ':' in ln:
+                    k, v = ln.split(':', 1)
+                    k, v = k.strip(), v.strip().strip('"').strip("'")
+                    if v.startswith('[') and v.endswith(']'):
+                        v = [x.strip().strip('"').strip("'") for x in v[1:-1].split(',')]
+                    attrs[k] = v
+    wc = len(body.split())
+    return dict(slug=fp.stem, title=attrs.get('title', fp.stem), date=attrs.get('date', fp.stem),
+                excerpt=attrs.get('excerpt',''), tags=attrs.get('tags',[]),
+                html=md_to_html(body), read_time=max(1, round(wc/200)))
+
+
+# ── Templates ──
+
+def page(title, body_html, is_article=False):
+    header = ''
+    if not is_article:
+        header = f'''
     <header class="site-header">
       <div class="site-header-top">
         <a href="./" class="brand">
           <div class="brand-icon">AI</div>
           <div class="brand-text">
-            <h1>Daily AI Brief</h1>
-            <p>Enterprise AI insights, curated daily by Cowork</p>
+            <h1>{SITE_TITLE}</h1>
+            <p>{SITE_SUBTITLE}</p>
           </div>
         </a>
         <div class="header-actions">
-          <a href="./feed.xml" class="btn-rss"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg> RSS</a>
+          <a href="./feed.xml" class="btn-rss">{ICON_RSS} RSS</a>
         </div>
       </div>
-    </header>
-    <main><div class="brief-count">9 briefs</div>
-<ul class="brief-list">
-      <li class="brief-item">
-        <a href="./2026-03-14.html" class="brief-card">
-          <div class="card-meta">
-            <span>Sat, Mar 14</span>
-            <span class="dot">&middot;</span>
-            <span>3 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 14, 2026</h2>
-          <p class="card-excerpt">Meta delays Avocado model and eyes Gemini license; NVIDIA GTC opens Monday with Rubin Ultra; Microsoft E7 resets enterprise AI pricing.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Infrastructure</span><span class="tag">Enterprise AI</span><span class="tag">Agents</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-12.html" class="brief-card">
-          <div class="card-meta">
-            <span>Thu, Mar 12</span>
-            <span class="dot">&middot;</span>
-            <span>3 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 12, 2026</h2>
-          <p class="card-excerpt">Nvidia commits $2B to Nebius ahead of GTC; Anthropic's Pentagon lawsuit draws OpenAI/Google support; ModelOp warns of enterprise AI value illusion.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">Infrastructure</span><span class="tag">Enterprise AI</span><span class="tag">Agents</span><span class="tag">Funding</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-11.html" class="brief-card">
-          <div class="card-meta">
-            <span>Wed, Mar 11</span>
-            <span class="dot">&middot;</span>
-            <span>9 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 11, 2026</h2>
-          <p class="card-excerpt">Microsoft launches $99/mo E7 tier bundling Copilot, Anthropic-Pentagon battle escalates as 30+ rival employees rally, Gartner forecasts $2.52T AI spend.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">Enterprise AI</span><span class="tag">LLM</span><span class="tag">Regulation</span><span class="tag">Infrastructure</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-10.html" class="brief-card">
-          <div class="card-meta">
-            <span>Tue, Mar 10</span>
-            <span class="dot">&middot;</span>
-            <span>8 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 10, 2026</h2>
-          <p class="card-excerpt">OpenAI hardware lead resigns over Pentagon deal, Apple confirms Google Gemini powers new Siri, Claude Opus 4.6 pricing drops 67%.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Regulation</span><span class="tag">Enterprise AI</span><span class="tag">Funding</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-09.html" class="brief-card">
-          <div class="card-meta">
-            <span>Mon, Mar 09</span>
-            <span class="dot">&middot;</span>
-            <span>6 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 9, 2026</h2>
-          <p class="card-excerpt">Gemini 3.1 Flash Lite ships, DeepSeek V4 trillion-parameter launch imminent, OpenAI signs $1B Disney-Sora licensing deal.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Chinese AI</span><span class="tag">Multimodal</span><span class="tag">Enterprise AI</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-08.html" class="brief-card">
-          <div class="card-meta">
-            <span>Sun, Mar 08</span>
-            <span class="dot">&middot;</span>
-            <span>5 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 8, 2026</h2>
-          <p class="card-excerpt">Grok 4.20 beta described as an order of magnitude smarter, MCP becomes the de facto agent standard, enterprise agent adoption doubles to 13.2%.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Agents</span><span class="tag">MCP</span><span class="tag">Enterprise AI</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-07.html" class="brief-card">
-          <div class="card-meta">
-            <span>Sat, Mar 07</span>
-            <span class="dot">&middot;</span>
-            <span>4 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 7, 2026</h2>
-          <p class="card-excerpt">OpenAI GPT-5.4 launches with 1M context and native computer use, Gemini Deep Think hits 84.6% on ARC-AGI-2, SpaceX-xAI merger announced.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Agents</span><span class="tag">Enterprise AI</span><span class="tag">Chinese AI</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-05.html" class="brief-card">
-          <div class="card-meta">
-            <span>Thu, Mar 05</span>
-            <span class="dot">&middot;</span>
-            <span>4 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 5, 2026</h2>
-          <p class="card-excerpt">GPT-5.3 Instant replaces GPT-5.2, Anthropic nears $20B revenue run rate, Pentagon-Anthropic dispute escalates, and AI costs alarm 70% of CIOs.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Enterprise AI</span><span class="tag">Regulation</span><span class="tag">Chinese AI</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li>
-      <li class="brief-item">
-        <a href="./2026-03-04.html" class="brief-card">
-          <div class="card-meta">
-            <span>Wed, Mar 04</span>
-            <span class="dot">&middot;</span>
-            <span>5 min read</span>
-          </div>
-          <h2 class="card-title">AI Brief — March 4, 2026</h2>
-          <p class="card-excerpt">Claude Sonnet 4.6 leads real-world benchmarks, OpenAI raises $110B at $730B valuation, and agentic frameworks reshape enterprise AI.</p>
-          <div class="card-bottom">
-            <div class="tags"><span class="tag">LLM</span><span class="tag">Enterprise AI</span><span class="tag">Agents</span><span class="tag">Funding</span></div>
-            <span class="card-arrow">Read <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></span>
-          </div>
-        </a>
-      </li></ul></main>
+    </header>'''
+
+    return f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{esc(title)}</title>
+  <meta name="description" content="{SITE_SUBTITLE}">
+  <link rel="alternate" type="application/rss+xml" title="{SITE_TITLE}" href="./feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
+  <style>{CSS}</style>
+</head>
+<body>
+  <div class="site">
+    {header}
+    <main>{body_html}</main>
     <footer class="site-footer">
       <p>Auto-published by <span class="cowork">Cowork</span> &middot; Nghi Duong</p>
     </footer>
   </div>
 </body>
-</html>
+</html>'''
+
+def fmt_date(s):
+    try: return datetime.strptime(s, '%Y-%m-%d').strftime('%b %d, %Y')
+    except: return s
+
+def fmt_short(s):
+    try: return datetime.strptime(s, '%Y-%m-%d').strftime('%a, %b %d')
+    except: return s
+
+
+# ── Build ──
+
+def build():
+    if DIST_DIR.exists(): shutil.rmtree(DIST_DIR)
+    DIST_DIR.mkdir(parents=True)
+
+    # Copy public assets (if any non-CSS files)
+    if PUBLIC_DIR.exists():
+        for f in PUBLIC_DIR.iterdir():
+            if f.is_file() and f.suffix != '.css':
+                shutil.copy2(f, DIST_DIR / f.name)
+
+    briefs = []
+    if BRIEFS_DIR.exists():
+        for f in BRIEFS_DIR.glob('*.md'):
+            briefs.append(parse_brief(f))
+    briefs.sort(key=lambda b: b['date'], reverse=True)
+
+    # ── Index ──
+    if not briefs:
+        content = '<div class="empty"><div class="empty-icon">&#x1F4E1;</div><p>No briefs yet.<br>Check back tomorrow morning.</p></div>'
+    else:
+        cards = []
+        for b in briefs:
+            tags = ''.join(f'<span class="tag">{t}</span>' for t in b['tags'])
+            tags_html = f'<div class="tags">{tags}</div>' if b['tags'] else ''
+            cards.append(f'''
+      <li class="brief-item">
+        <a href="./{b["slug"]}.html" class="brief-card">
+          <div class="card-meta">
+            <span>{fmt_short(b["date"])}</span>
+            <span class="dot">&middot;</span>
+            <span>{b["read_time"]} min read</span>
+          </div>
+          <h2 class="card-title">{b["title"]}</h2>
+          <p class="card-excerpt">{b["excerpt"]}</p>
+          <div class="card-bottom">
+            {tags_html}
+            <span class="card-arrow">Read {ICON_RIGHT}</span>
+          </div>
+        </a>
+      </li>''')
+
+        content = f'<div class="brief-count">{len(briefs)} brief{"s" if len(briefs)!=1 else ""}</div>\n<ul class="brief-list">{"".join(cards)}</ul>'
+
+    (DIST_DIR / 'index.html').write_text(page(SITE_TITLE, content))
+
+    # ── Detail pages ──
+    for i, b in enumerate(briefs):
+        tags = ''.join(f'<span class="tag">{t}</span>' for t in b['tags'])
+        tags_html = f'<div class="tags">{tags}</div>' if b['tags'] else ''
+
+        nav = '<div class="article-nav">'
+        if i < len(briefs)-1:
+            p = briefs[i+1]
+            nav += f'<a href="./{p["slug"]}.html">{ICON_LEFT} {fmt_short(p["date"])}</a>'
+        else:
+            nav += '<span></span>'
+        if i > 0:
+            n = briefs[i-1]
+            nav += f'<a href="./{n["slug"]}.html">{fmt_short(n["date"])} {ICON_RIGHT}</a>'
+        else:
+            nav += '<span></span>'
+        nav += '</div>'
+
+        detail = f'''
+    <a href="./" class="back">{ICON_LEFT} All briefs</a>
+    <article>
+      <div class="article-header">
+        <div class="meta">{fmt_date(b["date"])} &middot; {b["read_time"]} min read</div>
+        <h1>{b["title"]}</h1>
+        {tags_html}
+      </div>
+      <div class="article-body">{b["html"]}</div>
+      {nav}
+    </article>'''
+
+        (DIST_DIR / f'{b["slug"]}.html').write_text(page(b['title'], detail, True))
+
+    # ── RSS ──
+    items = '\n'.join(f'''    <item>
+      <title>{esc(b["title"])}</title>
+      <link>{SITE_URL}/{b["slug"]}.html</link>
+      <description>{esc(b["excerpt"])}</description>
+      <pubDate>{datetime.strptime(b["date"],"%Y-%m-%d").strftime("%a, %d %b %Y 00:00:00 GMT")}</pubDate>
+      <guid>{SITE_URL}/{b["slug"]}.html</guid>
+    </item>''' for b in briefs[:20])
+
+    (DIST_DIR / 'feed.xml').write_text(f'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{SITE_TITLE}</title>
+    <link>{SITE_URL}</link>
+    <description>{SITE_SUBTITLE}</description>
+    <language>en</language>
+{items}
+  </channel>
+</rss>''')
+
+    print(f'✓ Built {len(briefs)} brief(s) → dist/')
+
+if __name__ == '__main__':
+    build()
