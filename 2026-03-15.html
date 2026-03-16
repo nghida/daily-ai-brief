@@ -1,22 +1,13 @@
-#!/usr/bin/env python3
-"""Build static site from markdown briefs — v2 redesign."""
-
-import os, re, shutil, sys
-from datetime import datetime
-from pathlib import Path
-
-ROOT = Path(__file__).parent
-BRIEFS_DIR = ROOT / "briefs"
-DIST_DIR = ROOT / "dist"
-PUBLIC_DIR = ROOT / "public"
-
-SITE_TITLE = "Daily AI Brief"
-SITE_SUBTITLE = "Enterprise AI insights, curated daily by Cowork"
-SITE_URL = "https://nghida.github.io/daily-ai-brief"
-
-# ── Inline CSS ── (no external file dependency)
-
-CSS = '''
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Brief — March 15, 2026</title>
+  <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
+  <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="./feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
+  <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
 
 :root {
@@ -249,247 +240,73 @@ article { animation: fadeUp 0.3s ease both; }
   .brief-card:hover .card-title { color: var(--accent); }
   .card-arrow { opacity: 1; transform: translateX(0); }
 }
-'''
-
-# ── SVG Icons ──
-
-ICON_RSS = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>'
-ICON_LEFT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>'
-ICON_RIGHT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>'
-
-
-# ── Markdown to HTML ──
-
-def md_to_html(md):
-    lines = md.split('\n')
-    out = []
-    in_ul = in_ol = in_code = in_bq = False
-
-    for line in lines:
-        s = line.strip()
-
-        if s.startswith('```'):
-            if in_code: out.append('</code></pre>'); in_code = False
-            else: out.append('<pre><code>'); in_code = True
-            continue
-        if in_code: out.append(esc(line)); continue
-
-        if in_ul and not s.startswith('- ') and not s.startswith('* '): out.append('</ul>'); in_ul = False
-        if in_ol and not re.match(r'^\d+\.\s', s): out.append('</ol>'); in_ol = False
-
-        if s.startswith('> '):
-            if not in_bq: out.append('<blockquote>'); in_bq = True
-            out.append(f'<p>{inl(s[2:])}</p>'); continue
-        elif in_bq: out.append('</blockquote>'); in_bq = False
-
-        if s in ('---','***','___'): out.append('<hr>'); continue
-
-        m = re.match(r'^(#{1,6})\s+(.*)', line)
-        if m: out.append(f'<h{len(m[1])}>{inl(m[2])}</h{len(m[1])}>'); continue
-
-        if s.startswith('- ') or s.startswith('* '):
-            if not in_ul: out.append('<ul>'); in_ul = True
-            out.append(f'<li>{inl(s[2:])}</li>'); continue
-
-        m = re.match(r'^(\d+)\.\s+(.*)', s)
-        if m:
-            if not in_ol: out.append('<ol>'); in_ol = True
-            out.append(f'<li>{inl(m[2])}</li>'); continue
-
-        if s: out.append(f'<p>{inl(s)}</p>')
-        else: out.append('')
-
-    if in_ul: out.append('</ul>')
-    if in_ol: out.append('</ol>')
-    if in_bq: out.append('</blockquote>')
-    if in_code: out.append('</code></pre>')
-    return '\n'.join(out)
-
-def inl(t):
-    t = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', t)
-    t = re.sub(r'\*(.+?)\*', r'<em>\1</em>', t)
-    t = re.sub(r'`(.+?)`', r'<code>\1</code>', t)
-    t = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', t)
-    return t
-
-def esc(t): return t.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
-
-
-# ── Front matter ──
-
-def parse_brief(fp):
-    raw = fp.read_text('utf-8')
-    attrs, body = {}, raw
-    if raw.startswith('---'):
-        parts = raw.split('---', 2)
-        if len(parts) >= 3:
-            body = parts[2].strip()
-            for ln in parts[1].strip().split('\n'):
-                ln = ln.strip()
-                if ':' in ln:
-                    k, v = ln.split(':', 1)
-                    k, v = k.strip(), v.strip().strip('"').strip("'")
-                    if v.startswith('[') and v.endswith(']'):
-                        v = [x.strip().strip('"').strip("'") for x in v[1:-1].split(',')]
-                    attrs[k] = v
-    wc = len(body.split())
-    return dict(slug=fp.stem, title=attrs.get('title', fp.stem), date=attrs.get('date', fp.stem),
-                excerpt=attrs.get('excerpt',''), tags=attrs.get('tags',[]),
-                html=md_to_html(body), read_time=max(1, round(wc/200)))
-
-
-# ── Templates ──
-
-def page(title, body_html, is_article=False):
-    header = ''
-    if not is_article:
-        header = f'''
-    <header class="site-header">
-      <div class="site-header-top">
-        <a href="./" class="brand">
-          <div class="brand-icon">AI</div>
-          <div class="brand-text">
-            <h1>{SITE_TITLE}</h1>
-            <p>{SITE_SUBTITLE}</p>
-          </div>
-        </a>
-        <div class="header-actions">
-          <a href="./feed.xml" class="btn-rss">{ICON_RSS} RSS</a>
-        </div>
-      </div>
-    </header>'''
-
-    return f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{esc(title)}</title>
-  <meta name="description" content="{SITE_SUBTITLE}">
-  <link rel="alternate" type="application/rss+xml" title="{SITE_TITLE}" href="./feed.xml">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
-  <style>{CSS}</style>
+</style>
 </head>
 <body>
   <div class="site">
-    {header}
-    <main>{body_html}</main>
+    
+    <main>
+    <a href="./" class="back"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> All briefs</a>
+    <article>
+      <div class="article-header">
+        <div class="meta">Mar 15, 2026 &middot; 3 min read</div>
+        <h1>AI Brief — March 15, 2026</h1>
+        <div class="tags"><span class="tag">Agents</span><span class="tag">Enterprise AI</span><span class="tag">Chinese AI</span><span class="tag">Funding</span></div>
+      </div>
+      <div class="article-body"><h1>AI Brief — March 15, 2026</h1>
+
+<h2>Top Stories</h2>
+
+<h3>OpenClaw Sweeps China as AI Agent Fever Hits New Heights</h3>
+<p>Nearly 1,000 people lined up outside Tencent's headquarters in Shenzhen for the viral OpenClaw AI agent, and every major Chinese cloud provider has shipped its own version within weeks. The craze underscores how consumer-facing AI agents are now a mainstream battleground in China — though government agencies have already warned against installing OpenClaw on work devices, citing security risks. Meanwhile, Moonshot's Kimi 2.5, MiniMax's M2.5, and Zhipu's GLM-5 all received major updates, keeping the Chinese open-source model race at full speed.</p>
+
+<h3>Zoom Expands Agentic AI Platform for Enterprise Workflow Automation</h3>
+<p>On March 10, Zoom Communications launched a significant expansion of its enterprise agentic AI platform, embedding workflow orchestration directly into Zoom Workplace, Phone, and CX. The update introduces no-code custom AI agents, enterprise search connectors, and new productivity tools (AI Docs, AI Sheets, AI Slides). This signals a broader industry shift: collaboration platforms are evolving from communication tools into agentic workflow engines.</p>
+
+<h3>Galileo Launches Open-Source "Agent Control" Governance Layer</h3>
+<p>On March 13, Galileo released Agent Control — an open-source governance framework that lets enterprises define, enforce, and audit conduct rules for AI agents from a single management platform. As companies deploy fleets of autonomous agents, governance infrastructure is becoming as critical as the agents themselves. This addresses the trust gap that has stalled many enterprise agentic deployments.</p>
+
+<h3>AI Funding Shatters Records — $189B in February Alone</h3>
+<p>Global venture investment hit $189 billion in February, the largest single month on record, driven by OpenAI's historic $110B round (at $840B valuation, led by Amazon, Nvidia, and SoftBank) and Anthropic's $30B Series G (at $380B valuation). This week, Replit raised $400M at $9B, Nscale secured $2B, and robotics startup Rhoda AI emerged from stealth with $450M. The capital surge reflects investor conviction that AI infrastructure and applications are entering their deployment phase.</p>
+
+<hr>
+
+<h2>Enterprise AI Updates</h2>
+
+<ul>
+<li><strong>NTT DATA launched NVIDIA-powered enterprise AI factories</strong> (March 12), integrating GPU-accelerated computing with NVIDIA NIM microservices across cloud, data center, and edge — targeting measurable ROI for enterprise AI deployments.</li>
+</ul>
+
+<ul>
+<li><strong>OpenAI deprecated GPT-5.1 models</strong> in ChatGPT (March 11), migrating users to GPT-5.3 Instant, GPT-5.4 Thinking, and GPT-5.4 Pro. OpenAI also rolled out Workspace Analytics for ChatGPT Enterprise and Edu, giving admins visibility into adoption and engagement.</li>
+</ul>
+
+<ul>
+<li><strong>NVIDIA's 2026 State of AI report</strong> shows 86% of enterprises plan to increase AI budgets this year, with telecom (48%) and retail/CPG (47%) leading agentic AI adoption rates.</li>
+</ul>
+
+<ul>
+<li><strong>Agentic enterprise licensing is taking shape</strong> — Salesforce's new AELA (Agentic Enterprise License Agreement) offers predictable pricing for scaling AI agents, though Constellation Research warns that data fees remain the biggest risk to scaling agent deployments.</li>
+</ul>
+
+<ul>
+<li><strong>a16z's Big Ideas 2026</strong> identifies agent-native infrastructure, unstructured data management, and AI-driven cybersecurity automation as the top enterprise investment themes — signaling that the VC community sees 2026 as the year AI shifts from capability to execution.</li>
+</ul>
+
+<hr>
+
+<h2>What to Watch</h2>
+
+<p>The "agent washing" problem flagged by Deloitte deserves close attention. As every vendor rebrands their automation as "agentic AI," enterprise buyers need rigorous criteria to distinguish genuine multi-step, autonomous agent systems from dressed-up RPA. At the same time, error propagation in agent chains — where one bad output poisons every downstream step — is emerging as the core reliability challenge. Companies investing in agent observability, governance (like Galileo's Agent Control), and validation infrastructure will likely outperform those chasing flashy agent demos without the operational backbone to support them. The agentic AI market may be heading to $139B by 2034, but the winners will be those who solve trust and reliability first.</p>
+
+<hr>
+
+<p><em>Nghi's Daily AI Brief</em></p></div>
+      <div class="article-nav"><a href="./2026-03-14.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Sat, Mar 14</a><a href="./2026-03-16.html">Mon, Mar 16 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </article></main>
     <footer class="site-footer">
       <p>Auto-published by <span class="cowork">Cowork</span> &middot; Nghi Duong</p>
     </footer>
   </div>
 </body>
-</html>'''
-
-def fmt_date(s):
-    try: return datetime.strptime(s, '%Y-%m-%d').strftime('%b %d, %Y')
-    except: return s
-
-def fmt_short(s):
-    try: return datetime.strptime(s, '%Y-%m-%d').strftime('%a, %b %d')
-    except: return s
-
-
-# ── Build ──
-
-def build():
-    if DIST_DIR.exists(): shutil.rmtree(DIST_DIR)
-    DIST_DIR.mkdir(parents=True)
-
-    # Copy public assets (if any non-CSS files)
-    if PUBLIC_DIR.exists():
-        for f in PUBLIC_DIR.iterdir():
-            if f.is_file() and f.suffix != '.css':
-                shutil.copy2(f, DIST_DIR / f.name)
-
-    briefs = []
-    if BRIEFS_DIR.exists():
-        for f in BRIEFS_DIR.glob('*.md'):
-            briefs.append(parse_brief(f))
-    briefs.sort(key=lambda b: b['date'], reverse=True)
-
-    # ── Index ──
-    if not briefs:
-        content = '<div class="empty"><div class="empty-icon">&#x1F4E1;</div><p>No briefs yet.<br>Check back tomorrow morning.</p></div>'
-    else:
-        cards = []
-        for b in briefs:
-            tags = ''.join(f'<span class="tag">{t}</span>' for t in b['tags'])
-            tags_html = f'<div class="tags">{tags}</div>' if b['tags'] else ''
-            cards.append(f'''
-      <li class="brief-item">
-        <a href="./{b["slug"]}.html" class="brief-card">
-          <div class="card-meta">
-            <span>{fmt_short(b["date"])}</span>
-            <span class="dot">&middot;</span>
-            <span>{b["read_time"]} min read</span>
-          </div>
-          <h2 class="card-title">{b["title"]}</h2>
-          <p class="card-excerpt">{b["excerpt"]}</p>
-          <div class="card-bottom">
-            {tags_html}
-            <span class="card-arrow">Read {ICON_RIGHT}</span>
-          </div>
-        </a>
-      </li>''')
-
-        content = f'<div class="brief-count">{len(briefs)} brief{"s" if len(briefs)!=1 else ""}</div>\n<ul class="brief-list">{"".join(cards)}</ul>'
-
-    (DIST_DIR / 'index.html').write_text(page(SITE_TITLE, content))
-
-    # ── Detail pages ──
-    for i, b in enumerate(briefs):
-        tags = ''.join(f'<span class="tag">{t}</span>' for t in b['tags'])
-        tags_html = f'<div class="tags">{tags}</div>' if b['tags'] else ''
-
-        nav = '<div class="article-nav">'
-        if i < len(briefs)-1:
-            p = briefs[i+1]
-            nav += f'<a href="./{p["slug"]}.html">{ICON_LEFT} {fmt_short(p["date"])}</a>'
-        else:
-            nav += '<span></span>'
-        if i > 0:
-            n = briefs[i-1]
-            nav += f'<a href="./{n["slug"]}.html">{fmt_short(n["date"])} {ICON_RIGHT}</a>'
-        else:
-            nav += '<span></span>'
-        nav += '</div>'
-
-        detail = f'''
-    <a href="./" class="back">{ICON_LEFT} All briefs</a>
-    <article>
-      <div class="article-header">
-        <div class="meta">{fmt_date(b["date"])} &middot; {b["read_time"]} min read</div>
-        <h1>{b["title"]}</h1>
-        {tags_html}
-      </div>
-      <div class="article-body">{b["html"]}</div>
-      {nav}
-    </article>'''
-
-        (DIST_DIR / f'{b["slug"]}.html').write_text(page(b['title'], detail, True))
-
-    # ── RSS ──
-    items = '\n'.join(f'''    <item>
-      <title>{esc(b["title"])}</title>
-      <link>{SITE_URL}/{b["slug"]}.html</link>
-      <description>{esc(b["excerpt"])}</description>
-      <pubDate>{datetime.strptime(b["date"],"%Y-%m-%d").strftime("%a, %d %b %Y 00:00:00 GMT")}</pubDate>
-      <guid>{SITE_URL}/{b["slug"]}.html</guid>
-    </item>''' for b in briefs[:20])
-
-    (DIST_DIR / 'feed.xml').write_text(f'''<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-  <channel>
-    <title>{SITE_TITLE}</title>
-    <link>{SITE_URL}</link>
-    <description>{SITE_SUBTITLE}</description>
-    <language>en</language>
-{items}
-  </channel>
-</rss>''')
-
-    print(f'✓ Built {len(briefs)} brief(s) → dist/')
-
-if __name__ == '__main__':
-    build()
+</html>
