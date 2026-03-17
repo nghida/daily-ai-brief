@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Brief — March 8, 2026</title>
+  <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
+  <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="./feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --text-3: #78716c;
+  --muted: #a8a29e;
+  --accent: #c2410c;
+  --accent-light: #fff7ed;
+  --accent-mid: #fed7aa;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --shadow-sm: 0 1px 2px rgba(28,25,23,.05);
+  --shadow-md: 0 4px 16px rgba(28,25,23,.06), 0 1px 3px rgba(28,25,23,.04);
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --surface: #171717;
+    --text: #fafaf9;
+    --text-2: #d6d3d1;
+    --text-3: #a8a29e;
+    --muted: #78716c;
+    --accent: #fb923c;
+    --accent-light: #1c1210;
+    --accent-mid: #431407;
+    --border: #262626;
+    --border-light: #1c1c1c;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.2);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--accent-mid); color: var(--accent); }
+
+/* ── Layout ── */
+.site { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+
+/* ── Header ── */
+.site-header {
+  padding: 3rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.site-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand { display: flex; align-items: center; gap: 0.85rem; text-decoration: none; }
+.brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.05em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(194,65,12,.25);
+}
+.brand-text h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.35rem; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--text); line-height: 1.2;
+}
+.brand-text p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+.header-actions { display: flex; gap: 0.5rem; }
+.btn-rss {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-3); font-size: 0.78rem; font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.btn-rss:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn-rss svg { width: 14px; height: 14px; }
+
+/* ── Brief List ── */
+.brief-count {
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 1rem;
+}
+.brief-list { list-style: none; }
+.brief-card {
+  display: block;
+  text-decoration: none; color: inherit;
+  padding: 1.5rem;
+  margin: 0 -1.5rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.brief-card:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.brief-item + .brief-item { border-top: 1px solid var(--border-light); }
+.brief-item + .brief-item .brief-card { margin-top: 0; }
+.brief-card:hover + .brief-item, .brief-item:has(.brief-card:hover) { border-top-color: transparent; }
+.card-meta {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; color: var(--muted); font-weight: 500;
+  margin-bottom: 0.65rem;
+}
+.card-meta .dot { opacity: 0.4; }
+.card-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.25rem; font-weight: 600; line-height: 1.35;
+  letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 0.5rem;
+  transition: color 0.15s ease;
+}
+.brief-card:hover .card-title { color: var(--accent); }
+.card-excerpt { font-size: 0.9rem; color: var(--text-2); line-height: 1.65; }
+.card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+.tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.tag {
+  font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2em 0.6em; border-radius: 5px;
+  background: var(--accent-light); color: var(--accent);
+  border: 1px solid var(--accent-mid);
+}
+.card-arrow {
+  font-size: 0.8rem; color: var(--accent); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  opacity: 0; transform: translateX(-6px);
+  transition: all 0.2s ease;
+}
+.card-arrow svg { width: 14px; height: 14px; }
+.brief-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+/* ── Article Detail ── */
+.back { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 2rem; transition: color 0.15s; }
+.back:hover { color: var(--accent); }
+.back svg { width: 16px; height: 16px; }
+
+.article-header { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.article-header .meta { font-size: 0.78rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.article-header h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 2.1rem; font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.25; margin-top: 0.75rem; color: var(--text);
+}
+.article-header .tags { margin-top: 1rem; }
+
+/* ── Article Content ── */
+.article-body { font-size: 1rem; line-height: 1.85; color: var(--text); }
+.article-body h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em;
+  margin: 2.5rem 0 0.85rem; color: var(--text);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light);
+}
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--text); }
+.article-body p { margin-bottom: 1.15rem; color: var(--text-2); }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1.25rem 1.25rem; color: var(--text-2); }
+.article-body li { margin-bottom: 0.45rem; padding-left: 0.25rem; }
+.article-body li::marker { color: var(--accent); }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; text-decoration-color: var(--accent-mid); transition: text-decoration-color 0.15s; }
+.article-body a:hover { text-decoration-color: var(--accent); }
+.article-body strong { font-weight: 600; color: var(--text); }
+.article-body em { font-family: 'Fraunces', Georgia, serif; font-style: italic; color: var(--text-3); }
+.article-body blockquote { border-left: 3px solid var(--accent); background: var(--accent-light); padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text-3); font-style: italic; }
+.article-body blockquote p { margin: 0; }
+.article-body code { background: var(--border-light); color: var(--accent); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.87em; font-family: 'SF Mono', 'Fira Code', monospace; }
+.article-body pre { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; overflow-x: auto; margin: 1.5rem 0; }
+.article-body pre code { background: none; padding: 0; font-size: 0.85rem; color: var(--text-2); }
+.article-body hr { border: none; height: 1px; background: var(--border); margin: 2.5rem 0; }
+
+/* ── Article Nav ── */
+.article-nav { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.article-nav a { color: var(--text-3); text-decoration: none; font-size: 0.82rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s; }
+.article-nav a:hover { color: var(--accent); }
+.article-nav svg { width: 14px; height: 14px; }
+
+/* ── Footer ── */
+.site-footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+.site-footer p { font-size: 0.78rem; color: var(--muted); }
+.site-footer .cowork { font-weight: 600; color: var(--text-3); }
+
+/* ── Empty ── */
+.empty { text-align: center; padding: 5rem 0; color: var(--muted); }
+.empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4; }
+
+/* ── Animation ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.brief-item { animation: fadeUp 0.35s ease both; }
+.brief-item:nth-child(1) { animation-delay: .04s; }
+.brief-item:nth-child(2) { animation-delay: .08s; }
+.brief-item:nth-child(3) { animation-delay: .12s; }
+.brief-item:nth-child(4) { animation-delay: .16s; }
+.brief-item:nth-child(5) { animation-delay: .20s; }
+.brief-item:nth-child(6) { animation-delay: .24s; }
+.brief-item:nth-child(7) { animation-delay: .28s; }
+article { animation: fadeUp 0.3s ease both; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .site { padding: 0 1.15rem; }
+  .site-header { padding: 2rem 0 2rem; }
+  .brand-text h1 { font-size: 1.15rem; }
+  .card-title { font-size: 1.1rem; }
+  .article-header h1 { font-size: 1.65rem; }
+  .brief-card { padding: 1.25rem 0; margin: 0; border-radius: 0; }
+  .brief-card:hover { border-color: transparent; box-shadow: none; transform: none; background: transparent; }
+  .brief-card:hover .card-title { color: var(--accent); }
+  .card-arrow { opacity: 1; transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+  <div class="site">
+    
+    <main>
+    <a href="./" class="back"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> All briefs</a>
+    <article>
+      <div class="article-header">
+        <div class="meta">Mar 08, 2026 &middot; 5 min read</div>
+        <h1>AI Brief — March 8, 2026</h1>
+        <div class="tags"><span class="tag">LLM</span><span class="tag">Agents</span><span class="tag">MCP</span><span class="tag">Enterprise AI</span></div>
+      </div>
+      <div class="article-body"><h2>Model Releases & Updates</h2>
+
+<ul>
+<li><strong>OpenAI GPT-5.4 Thinking</strong> — OpenAI's latest frontier model fuses advanced reasoning, coding, and agentic workflows into a single model with an upfront thinking plan, stronger deep web research, and better context retention for long tasks. Also launched <strong>GPT-5.3 Instant</strong> for faster, more accurate everyday answers. (<a href="https://llm-stats.com/llm-updates">llm-stats.com</a>, <a href="https://releasebot.io/updates/openai">releasebot.io</a>)</li>
+</ul>
+
+<ul>
+<li><strong>OpenAI ChatGPT for Excel</strong> — Now in beta, this Excel add-in lets users build, update, and analyze models directly inside workbooks, powered by GPT-5.4 Thinking with financial data integrations. (<a href="https://releasebot.io/updates/openai">releasebot.io</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Google Gemini 3</strong> — Topped the LMArena Leaderboard with a 1501 Elo score, PhD-level reasoning (37.5% on Humanity's Last Exam), and a new "generative UI" feature that creates interactive tools and visualizations on the fly. (<a href="https://blog.google/technology/ai/">blog.google</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Google Genie 3</strong> — A foundation world model generating interactive 3D environments in real time at 720p/24fps with promptable world events. (<a href="https://blog.google/technology/ai/">blog.google</a>)</li>
+</ul>
+
+<ul>
+<li><strong>xAI Grok 4.20 Beta</strong> — Described by Musk as "an order of magnitude smarter and faster than Grok 4," featuring a rapid learning architecture with weekly improvements from beta user feedback. Beta closing mid-to-late March 2026. (<a href="https://leaveit2ai.com/ai-tools/language-model/grok-4">leaveit2ai.com</a>, <a href="https://x.ai/news">x.ai</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Anthropic Claude 5</strong> — Expected imminently (Feb–Mar 2026), with enhanced sustained reasoning and cross-system integration for coordinating across multiple platforms and managing long-term projects. (<a href="https://www.superhuman.ai/p/openai-google-and-anthropic-release-new-models">superhuman.ai</a>)</li>
+</ul>
+
+<h2>Chinese AI Labs (Qwen / Kimi / DeepSeek)</h2>
+
+<ul>
+<li><strong>Moonshot AI Kimi K2.5</strong> — Claimed to outperform leading U.S. models in video generation and agentic capabilities, processing text, images, and video simultaneously from a single prompt. (<a href="https://www.bloomberg.com/news/articles/2026-01-27/china-s-moonshot-unveils-new-ai-model-ahead-of-deepseek-release">bloomberg.com</a>, <a href="https://www.cnbc.com/2026/01/28/chinese-tech-companies-accelerate-ai-model-rollouts-us-rivals-deepseek-moonshot-kimi.html">cnbc.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>DeepSeek-OCR 2</strong> — Introduced an innovative DeepEncoder V2 approach enabling AI to dynamically reorder image regions based on semantic meaning. (<a href="https://www.cnbc.com/2026/01/28/chinese-tech-companies-accelerate-ai-model-rollouts-us-rivals-deepseek-moonshot-kimi.html">cnbc.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Alibaba Qwen App Update</strong> — Qwen now integrates with Alibaba's e-commerce platforms (Taobao), letting users shop, order food, and pay without leaving the chatbot. Claims 100M+ monthly active users. (<a href="https://www.cnbc.com/2026/01/28/chinese-tech-companies-accelerate-ai-model-rollouts-us-rivals-deepseek-moonshot-kimi.html">cnbc.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Anthropic Distillation Accusations</strong> — Anthropic publicly accused DeepSeek, Moonshot AI, and MiniMax of orchestrating industrial-scale distillation attacks using ~24,000 fake accounts and 16M+ exchanges to siphon Claude's capabilities. (<a href="https://venturebeat.com/technology/anthropic-says-deepseek-moonshot-and-minimax-used-24-000-fake-accounts-to">venturebeat.com</a>, <a href="https://www.latent.space/p/ainews-anthropic-accuses-deepseek">latent.space</a>)</li>
+</ul>
+
+<h2>Agentic Systems & Frameworks</h2>
+
+<ul>
+<li><strong>Microsoft Agent Framework 1.0 GA</strong> — Microsoft merged AutoGen and Semantic Kernel into a unified SDK targeting Q1 2026 general availability. AutoGen now receives only bug fixes and security patches. (<a href="https://www.turing.com/resources/ai-agent-frameworks">turing.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>LangGraph Dominance</strong> — LangChain + LangGraph continues to lead with 47M+ PyPI downloads and the largest ecosystem. LangGraph is now the recommended path for any agent workflow requiring loops, conditional logic, or state persistence. (<a href="https://www.alphamatch.ai/blog/top-agentic-ai-frameworks-2026">alphamatch.ai</a>)</li>
+</ul>
+
+<ul>
+<li><strong>CrewAI Growth</strong> — Fastest-growing framework for multi-agent use cases, solidifying its position alongside LangGraph and Microsoft Agent Framework as one of three clear leaders. (<a href="https://www.alphamatch.ai/blog/top-agentic-ai-frameworks-2026">alphamatch.ai</a>)</li>
+</ul>
+
+<ul>
+<li><strong>MCP Becoming Standard</strong> — Anthropic's Model Context Protocol is now the de facto standard for connecting AI agents to external tools, with OpenAI, Microsoft, and Google all embracing it. (<a href="https://www.superhuman.ai/p/openai-google-and-anthropic-release-new-models">superhuman.ai</a>)</li>
+</ul>
+
+<ul>
+<li><strong>NVIDIA + AWS Bedrock AgentCore</strong> — Strands Agents, Bedrock AgentCore, and NVIDIA NeMo Agent Toolkit integration delivers 20% token efficiency gains and 35% accuracy improvements for production agent deployments. (<a href="https://aws.amazon.com/blogs/machine-learning/build-and-deploy-scalable-ai-agents-with-nvidia-nemo-amazon-bedrock-agentcore-and-strands-agents/">aws.amazon.com</a>)</li>
+</ul>
+
+<h2>Workflow Automation</h2>
+
+<ul>
+<li><strong>n8n AI-Native Positioning</strong> — n8n now ships 70+ AI-specific nodes spanning LLMs, embeddings, vector databases, speech recognition, OCR, and image generation. Supports LangChain integration, self-hosted LLMs, and RAG setups for multi-agent workflows. (<a href="https://blog.n8n.io/best-ai-workflow-automation-tools/">blog.n8n.io</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Zapier Agents & Copilot</strong> — Zapier launched autonomous AI agents and a Copilot that builds automations from plain language, with 450+ AI-focused app integrations. (<a href="https://zapier.com/blog/n8n-vs-make/">zapier.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Make Grid for AI Orchestration</strong> — Make introduced "Grid" for enterprise AI orchestration, providing high-level views of agents, apps, and workflows with improved observability and debugging. (<a href="https://www.digidop.com/blog/n8n-vs-make-vs-zapier">digidop.com</a>)</li>
+</ul>
+
+<h2>Pricing & API Changes</h2>
+
+<ul>
+<li><strong>107 model price changes in March</strong> across 300+ tracked AI models, indicating major pricing shifts. (<a href="https://pricepertoken.com/">pricepertoken.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Current pricing snapshot (per 1M tokens, input/output):</strong></li>
+<li>OpenAI GPT-5.4: from $2.50 | GPT-5.3 Codex: $3/$15 | O3 Pro: $150</li>
+<li>Anthropic Opus 4.6: $5/$25 | Sonnet 4.6: $3/$15 | Haiku: $0.25/$1.25</li>
+<li>Google Gemini 2.5 Pro: $1.25/$10 | Flash: $0.30/$2.50</li>
+<li>DeepSeek V3.2: $0.28/$0.42 | R1: $0.50/$2.18</li>
+</ul>
+<p>(<a href="https://www.tldl.io/resources/openai-api-pricing">tldl.io</a>, <a href="https://pricepertoken.com/">pricepertoken.com</a>)</p>
+
+<ul>
+<li><strong>Global AI OpEx</strong> estimated to exceed $500 billion in 2026, up 300% from 2024 levels. (<a href="https://markets.financialcontent.com/wral/article/abnewswire-2026-3-2-the-2026-ai-cost-crisis-the-rise-of-one-api-aggregation-platforms-and-their-potential-to-deliver-80-savings">markets.financialcontent.com</a>)</li>
+</ul>
+
+<h2>Enterprise AI News</h2>
+
+<ul>
+<li><strong>Enterprise Connect 2026</strong> (March 10–12, Las Vegas) — Focus on practical AI adoption, governance, security policies, and managing AI agents at scale. (<a href="https://www.techtarget.com/searchUnifiedCommunications/feature/Enterprise-Connect-2026-brings-AI-from-hype-to-reality">techtarget.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Agent Adoption Doubling</strong> — Organizations with deployed AI agents nearly doubled from 7.2% (Aug 2025) to 13.2% (Dec 2025), with agents becoming the most widely adopted enterprise AI solution. (<a href="https://roboticsandautomationnews.com/2026/03/06/what-will-be-the-most-widely-adopted-ai-solution-in-2026/99304/">roboticsandautomationnews.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>OpenAI Enterprise Usage Surging</strong> — ChatGPT Enterprise message volume growing ~8x YoY and API reasoning token consumption up ~320x, signaling a shift from experimentation to sustained high-volume usage. (<a href="https://www.informationweek.com/machine-learning-ai/2026-enterprise-ai-predictions-fragmentation-commodification-and-the-agent-push-facing-cios">informationweek.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Enterprise Software M&A Surge</strong> — M&A activity surging 30–40% YoY to an estimated $600B in 2026, driven by AI disruption. (<a href="https://erp.today/enterprise-software-faces-ai-driven-disruption-as-development-productivity-gains-fail-to-materialize/">erp.today</a>)</li>
+</ul>
+
+<ul>
+<li><strong>xAI Pentagon Deal</strong> — xAI signed an agreement to allow the U.S. military to use Grok in classified systems. (<a href="https://www.axios.com/2026/02/23/ai-defense-department-deal-musk-xai-grok">axios.com</a>)</li>
+</ul>
+
+<h2>Research Highlights</h2>
+
+<ul>
+<li><strong>AAAI 2026</strong> received a record 29,000+ submissions, with ~20,000 originating from China, highlighting the global scale of AI research. (<a href="https://www.academicjobs.com/higher-education-news/new-research-papers-at-aaai-2026-in-singapore-1896">academicjobs.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Multi-Agent Research Surge</strong> — Notable papers include "TraceSIR" (structured analysis of agentic execution traces), "Bidirectional Curriculum Generation" (data-efficient mathematical reasoning), and "DIG to Heal" (scalable agent collaboration via explainable decision paths). (<a href="https://arxiv.org/list/cs.AI/current">arxiv.org</a>)</li>
+</ul>
+
+<ul>
+<li><strong>AI Safety at ICLR 2026</strong> — "AegisUI" paper on behavioral anomaly detection for AI agent systems accepted at the Agents in the Wild workshop. (<a href="https://arxiv.org/list/cs.AI/current">arxiv.org</a>)</li>
+</ul>
+
+<h2>Git New Rising Stars</h2>
+
+<ul>
+<li><strong>OpenClaw</strong> (273k ⭐) — Fastest-growing GitHub repo in history. Open-source personal AI assistant running on local hardware, connecting to WhatsApp, Telegram, Slack, Discord, Signal, iMessage, and Teams. (<a href="https://github.com/trending">github.com/trending</a>)</li>
+</ul>
+
+<ul>
+<li><strong>n8n</strong> (178k ⭐) — Fair-code workflow automation platform with native AI capabilities combining visual building with custom code. (<a href="https://github.com/trending">github.com/trending</a>)</li>
+</ul>
+
+<ul>
+<li><strong>AutoGPT</strong> (182k ⭐) — Accessible AI agent for everyone, continuing strong momentum. (<a href="https://github.com/trending">github.com/trending</a>)</li>
+</ul>
+
+<ul>
+<li><strong>llama.cpp</strong> — New March 2026 releases focused on speed improvements and broader hardware support for running LLMs on CPUs without expensive GPUs. (<a href="https://www.buildmvpfast.com/blog/best-open-source-ai-projects-github-2026">buildmvpfast.com</a>)</li>
+</ul>
+
+<ul>
+<li><strong>Stable Diffusion web UI</strong> (162k ⭐) — Continues as the go-to open-source image generation interface. (<a href="https://www.buildmvpfast.com/blog/best-open-source-ai-projects-github-2026">buildmvpfast.com</a>)</li>
+</ul>
+
+<hr>
+
+<p><em>Generated by Cowork — Nghi's Daily AI Brief</em></p></div>
+      <div class="article-nav"><a href="./2026-03-07.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Sat, Mar 07</a><a href="./2026-03-09.html">Mon, Mar 09 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </article></main>
+    <footer class="site-footer">
+      <p>Auto-published by <span class="cowork">Cowork</span> &middot; Nghi Duong</p>
+    </footer>
+  </div>
+</body>
+</html>
