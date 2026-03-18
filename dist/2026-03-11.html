@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Brief — March 11, 2026</title>
+  <meta name="description" content="Enterprise AI insights, curated daily by Cowork">
+  <link rel="alternate" type="application/rss+xml" title="Daily AI Brief" href="./feed.xml">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F4E1;</text></svg>">
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap');
+
+:root {
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --text-3: #78716c;
+  --muted: #a8a29e;
+  --accent: #c2410c;
+  --accent-light: #fff7ed;
+  --accent-mid: #fed7aa;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --shadow-sm: 0 1px 2px rgba(28,25,23,.05);
+  --shadow-md: 0 4px 16px rgba(28,25,23,.06), 0 1px 3px rgba(28,25,23,.04);
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a0a0a;
+    --surface: #171717;
+    --text: #fafaf9;
+    --text-2: #d6d3d1;
+    --text-3: #a8a29e;
+    --muted: #78716c;
+    --accent: #fb923c;
+    --accent-light: #1c1210;
+    --accent-mid: #431407;
+    --border: #262626;
+    --border-light: #1c1c1c;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.2);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: var(--accent-mid); color: var(--accent); }
+
+/* ── Layout ── */
+.site { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
+
+/* ── Header ── */
+.site-header {
+  padding: 3rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.site-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.brand { display: flex; align-items: center; gap: 0.85rem; text-decoration: none; }
+.brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; font-size: 0.7rem; letter-spacing: 0.05em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(194,65,12,.25);
+}
+.brand-text h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.35rem; font-weight: 700; letter-spacing: -0.03em;
+  color: var(--text); line-height: 1.2;
+}
+.brand-text p { font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
+.header-actions { display: flex; gap: 0.5rem; }
+.btn-rss {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-3); font-size: 0.78rem; font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.btn-rss:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn-rss svg { width: 14px; height: 14px; }
+
+/* ── Brief List ── */
+.brief-count {
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 1rem;
+}
+.brief-list { list-style: none; }
+.brief-card {
+  display: block;
+  text-decoration: none; color: inherit;
+  padding: 1.5rem;
+  margin: 0 -1.5rem;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.brief-card:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.brief-item + .brief-item { border-top: 1px solid var(--border-light); }
+.brief-item + .brief-item .brief-card { margin-top: 0; }
+.brief-card:hover + .brief-item, .brief-item:has(.brief-card:hover) { border-top-color: transparent; }
+.card-meta {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; color: var(--muted); font-weight: 500;
+  margin-bottom: 0.65rem;
+}
+.card-meta .dot { opacity: 0.4; }
+.card-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.25rem; font-weight: 600; line-height: 1.35;
+  letter-spacing: -0.02em; color: var(--text);
+  margin-bottom: 0.5rem;
+  transition: color 0.15s ease;
+}
+.brief-card:hover .card-title { color: var(--accent); }
+.card-excerpt { font-size: 0.9rem; color: var(--text-2); line-height: 1.65; }
+.card-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; }
+.tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.tag {
+  font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2em 0.6em; border-radius: 5px;
+  background: var(--accent-light); color: var(--accent);
+  border: 1px solid var(--accent-mid);
+}
+.card-arrow {
+  font-size: 0.8rem; color: var(--accent); font-weight: 500;
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  opacity: 0; transform: translateX(-6px);
+  transition: all 0.2s ease;
+}
+.card-arrow svg { width: 14px; height: 14px; }
+.brief-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+/* ── Article Detail ── */
+.back { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; margin-bottom: 2rem; transition: color 0.15s; }
+.back:hover { color: var(--accent); }
+.back svg { width: 16px; height: 16px; }
+
+.article-header { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.article-header .meta { font-size: 0.78rem; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.article-header h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 2.1rem; font-weight: 700; letter-spacing: -0.03em;
+  line-height: 1.25; margin-top: 0.75rem; color: var(--text);
+}
+.article-header .tags { margin-top: 1rem; }
+
+/* ── Article Content ── */
+.article-body { font-size: 1rem; line-height: 1.85; color: var(--text); }
+.article-body h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em;
+  margin: 2.5rem 0 0.85rem; color: var(--text);
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light);
+}
+.article-body h3 { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--text); }
+.article-body p { margin-bottom: 1.15rem; color: var(--text-2); }
+.article-body ul, .article-body ol { margin: 0.75rem 0 1.25rem 1.25rem; color: var(--text-2); }
+.article-body li { margin-bottom: 0.45rem; padding-left: 0.25rem; }
+.article-body li::marker { color: var(--accent); }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1.5px; text-decoration-color: var(--accent-mid); transition: text-decoration-color 0.15s; }
+.article-body a:hover { text-decoration-color: var(--accent); }
+.article-body strong { font-weight: 600; color: var(--text); }
+.article-body em { font-family: 'Fraunces', Georgia, serif; font-style: italic; color: var(--text-3); }
+.article-body blockquote { border-left: 3px solid var(--accent); background: var(--accent-light); padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; color: var(--text-3); font-style: italic; }
+.article-body blockquote p { margin: 0; }
+.article-body code { background: var(--border-light); color: var(--accent); padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.87em; font-family: 'SF Mono', 'Fira Code', monospace; }
+.article-body pre { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; overflow-x: auto; margin: 1.5rem 0; }
+.article-body pre code { background: none; padding: 0; font-size: 0.85rem; color: var(--text-2); }
+.article-body hr { border: none; height: 1px; background: var(--border); margin: 2.5rem 0; }
+
+/* ── Article Nav ── */
+.article-nav { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+.article-nav a { color: var(--text-3); text-decoration: none; font-size: 0.82rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; transition: color 0.15s; }
+.article-nav a:hover { color: var(--accent); }
+.article-nav svg { width: 14px; height: 14px; }
+
+/* ── Footer ── */
+.site-footer { margin-top: 3rem; padding: 2rem 0; border-top: 1px solid var(--border); text-align: center; }
+.site-footer p { font-size: 0.78rem; color: var(--muted); }
+.site-footer .cowork { font-weight: 600; color: var(--text-3); }
+
+/* ── Empty ── */
+.empty { text-align: center; padding: 5rem 0; color: var(--muted); }
+.empty-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4; }
+
+/* ── Animation ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+.brief-item { animation: fadeUp 0.35s ease both; }
+.brief-item:nth-child(1) { animation-delay: .04s; }
+.brief-item:nth-child(2) { animation-delay: .08s; }
+.brief-item:nth-child(3) { animation-delay: .12s; }
+.brief-item:nth-child(4) { animation-delay: .16s; }
+.brief-item:nth-child(5) { animation-delay: .20s; }
+.brief-item:nth-child(6) { animation-delay: .24s; }
+.brief-item:nth-child(7) { animation-delay: .28s; }
+article { animation: fadeUp 0.3s ease both; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .site { padding: 0 1.15rem; }
+  .site-header { padding: 2rem 0 2rem; }
+  .brand-text h1 { font-size: 1.15rem; }
+  .card-title { font-size: 1.1rem; }
+  .article-header h1 { font-size: 1.65rem; }
+  .brief-card { padding: 1.25rem 0; margin: 0; border-radius: 0; }
+  .brief-card:hover { border-color: transparent; box-shadow: none; transform: none; background: transparent; }
+  .brief-card:hover .card-title { color: var(--accent); }
+  .card-arrow { opacity: 1; transform: translateX(0); }
+}
+</style>
+</head>
+<body>
+  <div class="site">
+    
+    <main>
+    <a href="./" class="back"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> All briefs</a>
+    <article>
+      <div class="article-header">
+        <div class="meta">Mar 11, 2026 &middot; 9 min read</div>
+        <h1>AI Brief — March 11, 2026</h1>
+        <div class="tags"><span class="tag">Enterprise AI</span><span class="tag">LLM</span><span class="tag">Regulation</span><span class="tag">Infrastructure</span></div>
+      </div>
+      <div class="article-body"><h2>Top Stories</h2>
+
+<p><strong>Microsoft Unveils $99/mo E7 Tier — AI Becomes Mandatory in Enterprise Licensing</strong></p>
+<p>Microsoft announced Microsoft 365 E7 on March 9, generally available May 1. At $99/user/month (up from $60 for E5), E7 bundles Copilot, Entra identity tools, and the new Agent 365 product for managing enterprise AI agents. Microsoft also introduced Copilot Cowork — built in partnership with Anthropic — for multi-step autonomous tasks like scheduling emails and meeting prep. Info-Tech Research Group warns the cumulative effect of Microsoft's 2025–2026 pricing changes could impose a 25% cost increase on typical $10M Enterprise Agreements. CIOs should model renewal impact now.</p>
+<p><a href="https://www.cnbc.com/2026/03/09/microsoft-office-365-e7-copilot-ai.html">Source</a> | <a href="https://www.geekwire.com/2026/microsofts-new-copilot-cowork-integrates-anthropics-claude-in-rollout-of-new-e7-licensing-tier/">Source</a></p>
+
+<p><strong>Anthropic-Pentagon Battle Escalates — Rival Lab Employees Rally in Support</strong></p>
+<p>Over 30 employees from OpenAI and Google DeepMind — including DeepMind chief scientist Jeff Dean — filed a legal brief supporting Anthropic's lawsuit against the Department of Defense. The Pentagon designated Anthropic a "supply chain risk" after the company refused to permit mass surveillance or autonomous weapons use. Google is deepening its own Pentagon AI engagement to fill the gap. Anthropic's $200M DOD contract and hundreds of millions more in federal revenue hang in the balance.</p>
+<p><a href="https://techcrunch.com/2026/03/09/openai-and-google-employees-rush-to-anthropics-defense-in-dod-lawsuit/">Source</a> | <a href="https://www.cnbc.com/2026/03/10/google-deepens-pentagon-ai-push-after-anthropic-sues-trump-admin.html">Source</a></p>
+
+<p><strong>Gartner: Global AI Spending to Hit $2.52 Trillion in 2026</strong></p>
+<p>Gartner projects worldwide AI spending will reach $2.52 trillion in 2026 — a 44% YoY increase — with $1.37T allocated to infrastructure alone. However, over 80% of organizations report no measurable EBIT impact from gen AI despite 71% regularly using it. The gap between investment and ROI remains the central challenge for enterprise AI leaders.</p>
+<p><a href="https://www.gartner.com/en/newsroom/press-releases/2026-1-15-gartner-says-worldwide-ai-spending-will-total-2-point-5-trillion-dollars-in-2026">Source</a></p>
+
+<p><strong>Nvidia GTC 2026 Begins March 16 — Rubin Platform in Focus</strong></p>
+<p>Nvidia's GTC conference starts next week in San Jose (March 16–19). The spotlight is on the Rubin platform — six new chips including the Vera CPU and Rubin GPU delivering 50 PF NVFP4 inference per chip, a 5x jump over Blackwell GB200 NVL72. AWS, Google Cloud, Microsoft Azure, and OCI will deploy Rubin-based instances in H2 2026. Nvidia also formalized a multiyear partnership with Meta spanning millions of Blackwell and Rubin GPUs. Separately, NemoClaw — Nvidia's open-source AI agent platform for enterprises — is expected to be unveiled at GTC.</p>
+<p><a href="https://nvidianews.nvidia.com/news/rubin-platform-ai-supercomputer">Source</a> | <a href="https://www.cnbc.com/2026/03/10/nvidia-open-source-ai-agent-platform-nemoclaw-wired-agentic-tools-openclaw-clawdbot-moltbot.html">Source</a></p>
+
+<h2>Enterprise AI Updates</h2>
+
+<ul>
+<li><strong>OpenAI acquired Promptfoo</strong>, an AI security startup used by 25%+ of Fortune 500 companies for LLM vulnerability testing. The technology will be integrated into OpenAI Frontier for enterprise agent deployment. <a href="https://techcrunch.com/2026/03/09/openai-acquires-promptfoo-to-secure-its-ai-agents/">Source</a></li>
+</ul>
+
+<ul>
+<li><strong>Zoom expanded its enterprise agentic AI platform</strong>, enabling custom AI agents that orchestrate workflows across Salesforce, Slack, and ServiceNow through the Custom AI Companion add-on. <a href="https://news.zoom.com/ec26-agentic-ai-platform-announcements/">Source</a></li>
+</ul>
+
+<ul>
+<li><strong>JetBrains launched Air and Junie CLI</strong> (March 9) — Air is a unified workspace where Claude Agent, Gemini CLI, Codex, and Junie CLI work side-by-side for AI-assisted development. <a href="https://www.infoworld.com/article/4142675/jetbrains-launches-air-and-junie-cli-for-ai-assisted-development.html">Source</a></li>
+</ul>
+
+<ul>
+<li><strong>GitHub Agentic Workflows entered technical preview</strong>, enabling coding agents to automate context-aware repository tasks from issue triage to multi-file refactors. <a href="https://www.infoq.com/news/2026/02/github-agentic-workflows/">Source</a></li>
+</ul>
+
+<ul>
+<li><strong>Apple MacBook Pro with M5 Pro/M5 Max ships today</strong> (March 11), featuring Neural Accelerators in the GPU for running advanced LLMs on-device. <a href="https://www.apple.com/newsroom/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/">Source</a></li>
+</ul>
+
+<h2>Chinese AI Labs</h2>
+
+<ul>
+<li><strong>DeepSeek V4 expected imminently</strong> — reportedly 1T parameters with native multimodal capabilities, trained on Nvidia's most advanced chips. Anthropic continues pursuing legal action over alleged distillation using 24,000 fake accounts.</li>
+</ul>
+
+<ul>
+<li><strong>Alibaba's Qwen family now leads Hugging Face in cumulative downloads</strong>, surpassing Meta's Llama. A recent MIT study confirms Chinese open-source models have overtaken US models in total downloads globally. UBS recommends Qwen as the most competitive Chinese model family. <a href="https://www.cnbc.com/2026/03/01/forget-deepseek-of-chinas-5-new-ai-models-ubs-prefers-this-one.html">Source</a></li>
+</ul>
+
+<ul>
+<li><strong>AMI Labs (Yann LeCun) raised $1.03B</strong> at a $3.5B pre-money valuation — the largest seed round for a European company — to build "world models" that learn from physical environments rather than next-token prediction. Investors include Nvidia, Temasek, and Bezos Expeditions. <a href="https://techcrunch.com/2026/03/09/yann-lecuns-ami-labs-raises-1-03-billion-to-build-world-models/">Source</a></li>
+</ul>
+
+<h2>Pricing & API Changes</h2>
+
+<p>Current LLM API pricing landscape (per 1M tokens):</p>
+
+<p>| Provider | Model | Input | Output |</p>
+<p>|---|---|---|---|</p>
+<p>| OpenAI | GPT-5.4 | $2.50 | $20.00 |</p>
+<p>| Anthropic | Opus 4.6 | $5.00 | $25.00 |</p>
+<p>| Anthropic | Sonnet 4.6 | $3.00 | $15.00 |</p>
+<p>| Google | Gemini 2.5 Pro | $1.25 | $10.00 |</p>
+<p>| DeepSeek | V3.2 | $0.28 | $0.42 |</p>
+<p>| xAI | Grok 4.1 | $0.20 | $0.50 |</p>
+
+<p>OpenAI container usage shifts to per-20-minute session billing starting March 31, 2026.</p>
+
+<h2>What to Watch</h2>
+
+<p>The Anthropic-Pentagon confrontation is becoming a defining moment for AI's relationship with government. If the "supply chain risk" designation stands, it creates a precedent where safety boundaries invite federal retaliation. Meanwhile, Microsoft's E7 launch makes AI a mandatory enterprise budget line item — CIOs who haven't modeled 2026 renewal impact are running out of time. With GTC next week and NemoClaw's unveiling, expect Nvidia to set the infrastructure and agentic AI narrative for the rest of the year. On the adoption front, Gartner's $2.52T spending forecast alongside the 80%+ ROI gap suggests 2026 will be the year enterprises either prove AI's value or face serious budget scrutiny.</p>
+
+<hr>
+
+<h2>🌟 GitHub Rising Stars (5k+ gained this week)</h2>
+
+<p><strong><a href="https://github.com/karpathy/autoresearch">karpathy/autoresearch</a></strong> · ⭐ 8k+ · <strong>+8k this week</strong> · <code>Agent / Research</code></p>
+<p>Andrej Karpathy open-sourced autoresearch on March 7 — a 630-line Python tool that gives an AI agent a single-GPU training setup and lets it run autonomous ML experiments overnight. The agent modifies code, runs 5-minute training loops, checks if validation loss improved, keeps or discards, and repeats — running ~100 experiments while you sleep. The fastest-rising new agentic AI repo this week. Enterprise implication: autonomous experimentation at scale without human-in-the-loop for every iteration.</p>
+<p><a href="https://www.marktechpost.com/2026/03/08/andrej-karpathy-open-sources-autoresearch-a-630-line-python-tool-letting-ai-agents-run-autonomous-ml-experiments-on-single-gpus/">Source</a></p>
+
+<p><strong><a href="https://github.com/FoundationAgents/OpenManus">FoundationAgents/OpenManus</a></strong> · ⭐ 52k+ · <strong>+5k–8k this week</strong> · <code>Agent / General-purpose</code></p>
+<p>Open-source replication of Manus AI agent built by MetaGPT contributors in 3 hours. Features a modular multi-agent architecture: PlanningAgent breaks complex tasks into steps, ToolCallAgent executes tools, all coordinated by a Manus "project manager" agent. Integrates Claude Opus 4.6, Qwen VL Plus, and GPT-5 series. Active community with 9,000+ forks. One of the fastest-growing agentic frameworks in GitHub history.</p>
+<p><a href="https://www.decisioncrafters.com/openmanus-the-revolutionary-open-source-ai-agent-framework-thats-transforming-general-ai-development-with-52k-github-stars/">Source</a></p>
+
+<p><strong><a href="https://github.com/openclaw/openclaw">openclaw/openclaw</a></strong> · ⭐ 210k+ · <strong>+5k–7k this week</strong> · <code>Agent / Personal AI</code></p>
+<p>The fastest-growing open-source project in GitHub history — went from 9k to 210k+ in ~60 days. Self-hosted personal AI assistant connecting to WhatsApp, Telegram, Slack, Discord, Signal, iMessage, and Teams. ClawHub has 5,700+ community skills. Latest: v2026.3.8 with Claude Opus 4.6 adaptive reasoning and SecretRef credential management across 64 integration targets.</p>
+<p><a href="https://dextralabs.com/blog/what-is-openclaw-self-hosted-ai-agent-2026/">Source</a></p>
+
+<p><strong><a href="https://github.com/n8n-io/n8n">n8n-io/n8n</a></strong> · ⭐ 178k+ · <strong>+5k this week</strong> · <code>Tool / Workflow Automation</code></p>
+<p>Fair-code workflow automation with 400+ integrations and 70+ native AI nodes. March 9 release added GitHub Trigger webhook signature verification and 33 MB core memory reduction. Steady weekly star growth driven by enterprise automation adoption.</p>
+<p><a href="https://github.com/n8n-io/n8n/releases">Source</a></p>
+
+<p><strong><a href="https://github.com/langgenius/dify">langgenius/dify</a></strong> · ⭐ 130k+ · <strong>+5k this week</strong> · <code>Agent / Orchestrator</code></p>
+<p>Production-ready agentic workflow platform with visual drag-and-drop builder, built-in RAG, 100+ LLM providers, and observability dashboard. Continuous releases with expanded model provider support. Consistently in GitHub's weekly top 5 AI repos.</p>
+<p><a href="https://github.com/langgenius/dify">Source</a></p>
+
+<p><strong><a href="https://github.com/langflow-ai/langflow">langflow-ai/langflow</a></strong> · ⭐ 100k+ · <strong>+5k this week</strong> · <code>Agent / Low-code</code></p>
+<p>Hit 100k stars milestone recently. Low-code platform for designing and deploying AI agent pipelines and RAG workflows. Drag-and-drop interface, supports LangChain, MCP, and multi-model orchestration. Strong adoption signal: 100k milestone crossed in this reporting window.</p>
+<p><a href="https://www.langflow.org/blog/100k-stars-on-github">Source</a></p>
+
+<p><strong><a href="https://github.com/google/langextract">google/langextract</a></strong> · ⭐ 32.9k · <strong>+6,121 this week</strong> · <code>RAG / Extraction</code></p>
+<p>Google's Python library for extracting structured information from unstructured text using LLMs. Targets the most painful part of RAG pipelines — turning documents into clean, typed data. Rapidly gaining adoption as a core RAG preprocessing layer.</p>
+<p><a href="https://www.shareuhack.com/en/posts/github-trending-weekly-2026-02-18">Source</a></p>
+
+<p><strong><a href="https://github.com/browser-use/browser-use">browser-use/browser-use</a></strong> · ⭐ 79.9k · <strong>+5k this week</strong> · <code>Agent / Browser</code></p>
+<p>Gives any LLM the ability to control a web browser — navigate, click, fill forms, extract data — via Playwright. SDK v3.0.x (released March 3) introduces a cleaner <code>client.run()</code> API. Described as "Claude Code for the browser."</p>
+<p><a href="https://github.com/browser-use/browser-use">Source</a></p>
+
+<p><strong><a href="https://github.com/infiniflow/ragflow">infiniflow/ragflow</a></strong> · ⭐ 74.7k · <strong>+5k this week</strong> · <code>RAG</code></p>
+<p>Leading open-source RAG engine with multi-modal document ingestion, citation tracking, and agentic retrieval. v0.24.0 added memory management APIs and gVisor-backed multi-sandbox for secure enterprise deployments.</p>
+<p><a href="https://github.com/infiniflow/ragflow">Source</a></p>
+
+<p><strong><a href="https://github.com/ollama/ollama">Ollama/ollama</a></strong> · ⭐ 162k+ · <strong>+5k this week</strong> · <code>Infrastructure / Local LLM</code></p>
+<p>The standard for running LLMs locally — <code>ollama run deepseek-v4</code> or any of 100+ models in one command. Supports Qwen3.5, GLM-5, Llama, Gemma, Mistral, and all major open-weight models. Steady weekly growth as local inference becomes enterprise-standard practice.</p>
+<p><a href="https://blog.bytebytego.com/p/top-ai-github-repositories-in-2026">Source</a></p>
+
+<hr>
+
+<h2>📚 Academic Papers Worth Reading</h2>
+
+<h3>NeurIPS 2025 — Best Papers (Awarded November 2025)</h3>
+
+<p><strong>Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free</strong> <em>(Alibaba Qwen Team)</em></p>
+<p>Best Paper Award. Systematically shows that adding a sigmoid gate after scaled-dot-product attention heads yields consistent LLM performance gains across 15B MoE and 1.7B dense models trained on up to 3.5T tokens. Practical impact: Qwen incorporated this directly into production models.</p>
+<p><a href="https://www.alizila.com/alibaba-qwen-wins-neurips-2025-best-paper-award-for-breakthrough-in-attention-mechanisms/">Source</a></p>
+
+<p><strong>Artificial Hivemind: The Open-Ended Homogeneity of Language Models</strong> <em>(University of Washington)</em></p>
+<p>Best Paper Award. Using Infinity-Chat (26,000 real-world queries, 31,000+ human preference annotations), evaluated 70+ LLMs and found an "Artificial Hivemind" effect — models exhibit both intra-model repetition and inter-model homogeneity. Critical finding for enterprise AI diversity and risk.</p>
+<p><a href="https://news.cs.washington.edu/2026/01/22/allen-school-researchers-earn-neurips-best-paper-award-for-artificial-hivemind-effect-across-llm-open-ended-generation/">Source</a></p>
+
+<p><strong>1000 Layer Networks for Self-Supervised RL: Scaling Depth Can Enable New Goal-Reaching Capabilities</strong></p>
+<p>Best Paper Award. Successfully trained an RL agent to 1,000+ layers using contrastive self-supervised learning (no reward signals), triggering dramatic emergent goal-reaching capabilities. Challenges the assumption that deep RL is unstable at extreme depth.</p>
+<p><a href="https://blog.neurips.cc/2025/11/26/announcing-the-neurips-2025-best-paper-awards/">Source</a></p>
+
+<p><strong>Superposition Yields Robust Neural Scaling</strong> <em>(Datasets & Benchmarks Track Best Paper)</em></p>
+<p>Argues that neural scaling laws emerge from representation superposition — models pack more features into hidden dimensions than they can cleanly separate. Under strong superposition, loss decreases proportionally to model size, matching real LLM behavior. Explains why scaling still works.</p>
+<p><a href="https://blog.neurips.cc/2025/11/26/announcing-the-neurips-2025-best-paper-awards/">Source</a></p>
+
+<hr>
+
+<h3>ICLR 2026 — Notable Oral Papers (Conference: April 23–27, Rio de Janeiro)</h3>
+<p><em>5,300+ accepted papers; 223 oral presentations</em></p>
+
+<p><strong>AgentFlow: Trainable In-the-Flow Agentic Reasoning</strong></p>
+<p>A 4-module framework (planner, executor, verifier, generator) with evolving memory that applies outcome-driven RL directly inside the multi-turn agent loop. A 7B-backbone AgentFlow beats GPT-4o with average gains of +14.9% search, +14.0% agentic, +14.5% math, +4.1% scientific tasks. Key result: small open models with the right training loop can exceed frontier proprietary models.</p>
+<p><a href="https://iclr.cc/virtual/2026/papers.html">Source</a></p>
+
+<p><strong>MedAgentGym: Benchmarking LLM Agents for Biomedical Reasoning</strong></p>
+<p>Scalable training and evaluation environment with 72,413 task instances across 129 categories from 12 real-world biomedical scenarios. Closes the gap between academic LLM research and clinical deployment requirements.</p>
+<p><a href="https://iclr.cc/virtual/2026/papers.html">Source</a></p>
+
+<p><strong>FaithCoT-Bench: Instance-Level Chain-of-Thought Faithfulness</strong></p>
+<p>Expert-annotated benchmark with 1,000+ trajectories from four LLMs across four domains, including 300+ unfaithful instances. First comprehensive benchmark for measuring whether a model's stated reasoning actually matches its computation — directly relevant to enterprise AI auditing.</p>
+<p><a href="https://iclr.cc/virtual/2026/papers.html">Source</a></p>
+
+<p><strong>HEX: Hidden Semi-Autoregressive Experts</strong></p>
+<p>Training-free inference method that boosts reasoning accuracy 3.56x on GSM8K (24.72% → 88.10%) and dramatically improves MATH benchmark (16.40% → 40.00%) with no fine-tuning. Applies to existing deployed models — immediate enterprise applicability.</p>
+<p><a href="https://iclr.cc/virtual/2026/papers.html">Source</a></p>
+
+<p><strong>Eliciting Reasoning with Cognitive Tools</strong> <em>(DAIR.AI highlight)</em></p>
+<p>Modular tool-based reasoning inspired by cognitive science — LLM calls self-contained "cognitive tools" to scaffold internal reasoning. Significant pass@1 accuracy boost on AIME 2024, MATH500, and AMC across Qwen2.5, Llama3, and GPT-4.1. Points toward modular, auditable reasoning pipelines for enterprise use.</p>
+<p><a href="https://www.dair.ai/">Source</a></p>
+
+<p><strong>AlphaEvolve</strong> <em>(Google DeepMind — DAIR.AI highlight)</em></p>
+<p>Coding agent that uses LLM-guided evolution to discover new algorithms: LLMs generate code changes, evaluators provide feedback, an evolutionary loop iteratively improves solutions. Has already rediscovered and improved upon algorithms used in production Google systems.</p>
+<p><a href="https://www.dair.ai/">Source</a></p>
+
+<hr>
+
+<p><em>Nghi's Daily AI Brief</em></p></div>
+      <div class="article-nav"><a href="./2026-03-10.html"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg> Tue, Mar 10</a><a href="./2026-03-12.html">Thu, Mar 12 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </article></main>
+    <footer class="site-footer">
+      <p>Auto-published by <span class="cowork">Cowork</span> &middot; Nghi Duong</p>
+    </footer>
+  </div>
+</body>
+</html>
