@@ -6,6 +6,55 @@
     <description>Enterprise AI insights, curated daily by Cowork</description>
     <language>en</language>
     <item>
+      <title>AI Brief — April 6, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-04-06.html</link>
+      <description>OpenAI rolls out GPT-5.2; DeepSeek V4 &amp; Tencent Hunyuan launch in April; Q1 2026 VC hits $300B record.</description>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-04-06.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — April 4, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-04-04.html</link>
+      <description>OpenAI 'Spud' imminent; DeepSeek V4 goes Huawei-native; enterprise AI pricing shifts to outcomes; Q1 VC shatters $300B record.</description>
+      <pubDate>Sat, 04 Apr 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-04-04.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — March 30, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-03-30.html</link>
+      <description>Enterprise agentic AI hits production scale; Gemini 3.1 Pro claims #1 on LM Arena; AI infrastructure funding wave across every stack layer.</description>
+      <pubDate>Mon, 30 Mar 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-03-30.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — March 29, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-03-29.html</link>
+      <description>Anthropic confirms 'Claude Mythos' above Opus; NVIDIA Rubin cuts inference cost 10x; OpenAI executes 6 acquisitions; DeepSeek V4 due in April.</description>
+      <pubDate>Sun, 29 Mar 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-03-29.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — March 28, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-03-28.html</link>
+      <description>ARC-AGI-3 exposes frontier AI limits; Anthropic confirms leaked reasoning model; OpenAI's 'Spud' nears launch as IPO prep begins.</description>
+      <pubDate>Sat, 28 Mar 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-03-28.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — March 23, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-03-23.html</link>
+      <description>Hunter Alpha revealed as Xiaomi's MiMo-V2-Pro; Apple delays Gemini-powered Siri to iOS 26.5; robotics funding boom continues.</description>
+      <pubDate>Mon, 23 Mar 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-03-23.html</guid>
+    </item>
+    <item>
+      <title>AI Brief — March 22, 2026</title>
+      <link>https://nghida.github.io/daily-ai-brief/2026-03-22.html</link>
+      <description>NVIDIA GTC unveils Vera Rubin platform; OpenAI ships GPT-5.4 with 1M context; U.S. passes AI Accountability Act.</description>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 GMT</pubDate>
+      <guid>https://nghida.github.io/daily-ai-brief/2026-03-22.html</guid>
+    </item>
+    <item>
       <title>AI Brief — March 20, 2026</title>
       <link>https://nghida.github.io/daily-ai-brief/2026-03-20.html</link>
       <description>Micron surges on AI memory demand; OpenAI ships GPT-5.4 Mini; MiniMax launches M2.7 agent model; Gartner forecasts $2.5T in AI spend.</description>
@@ -95,20 +144,6 @@
       <description>OpenAI GPT-5.4 launches with 1M context and native computer use, Gemini Deep Think hits 84.6% on ARC-AGI-2, SpaceX-xAI merger announced.</description>
       <pubDate>Sat, 07 Mar 2026 00:00:00 GMT</pubDate>
       <guid>https://nghida.github.io/daily-ai-brief/2026-03-07.html</guid>
-    </item>
-    <item>
-      <title>AI Brief — March 5, 2026</title>
-      <link>https://nghida.github.io/daily-ai-brief/2026-03-05.html</link>
-      <description>GPT-5.3 Instant replaces GPT-5.2, Anthropic nears $20B revenue run rate, Pentagon-Anthropic dispute escalates, and AI costs alarm 70% of CIOs.</description>
-      <pubDate>Thu, 05 Mar 2026 00:00:00 GMT</pubDate>
-      <guid>https://nghida.github.io/daily-ai-brief/2026-03-05.html</guid>
-    </item>
-    <item>
-      <title>AI Brief — March 4, 2026</title>
-      <link>https://nghida.github.io/daily-ai-brief/2026-03-04.html</link>
-      <description>Claude Sonnet 4.6 leads real-world benchmarks, OpenAI raises $110B at $730B valuation, and agentic frameworks reshape enterprise AI.</description>
-      <pubDate>Wed, 04 Mar 2026 00:00:00 GMT</pubDate>
-      <guid>https://nghida.github.io/daily-ai-brief/2026-03-04.html</guid>
     </item>
   </channel>
 </rss>
